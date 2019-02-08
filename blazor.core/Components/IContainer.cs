@@ -2,8 +2,8 @@
 
 namespace Blazor.Core.Components
 {
-    public interface IComponentContainer
+    public interface IContainer
     {
-        void SetContent(IComponent component);
+        void SetContent(RenderFragment component);
     }
 }

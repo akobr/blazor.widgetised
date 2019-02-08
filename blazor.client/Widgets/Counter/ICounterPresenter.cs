@@ -1,6 +1,4 @@
-﻿using Blazor.PureMvc;
-
-namespace Blazor.Client.Widgets.Counter
+﻿namespace Blazor.Client.Widgets.Counter
 {
     public interface ICounterPresenter
     {

@@ -4,22 +4,33 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Core.Widgets
 {
-    public abstract class WidgetPresenter : IPresenter
+    public abstract class WidgetPresenter<TComponent> : IPresenter
+        where TComponent : class, IComponent
     {
         private readonly IWidgetContainerProvider provider;
-        private IComponentContainer container;
+        private IContainer container;
 
-        protected abstract IComponent Component { get; }
+        public TComponent Component { get; private set; }
 
         public void Activate(string containerKey)
         {
             container = provider.GetContainer(containerKey);
-            container?.SetContent(Component);
+            container?.SetContent(BuildFragment());
         }
 
         public void Deactivate()
         {
             container?.SetContent(null);
+        }
+
+        protected virtual RenderFragment BuildFragment()
+        {
+            return (builder) =>
+            {
+                builder.OpenComponent<TComponent>(0);
+                builder.AddComponentReferenceCapture(1, (comRef) => Component = (TComponent)comRef);
+                builder.CloseComponent();
+            };
         }
     }
 }

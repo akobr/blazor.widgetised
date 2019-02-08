@@ -1,24 +1,13 @@
-﻿using Blazor.Core.Widgets;
-using Blazor.PureMvc;
-using Microsoft.AspNetCore.Components;
-using System;
+﻿using blazor.client.Widgets.Counter;
+using Blazor.Core.Widgets;
 
 namespace Blazor.Client.Widgets.Counter
 {
-    public class CounterPresenter : WidgetPresenter, ICounterPresenter, IInitialisable
+    public class CounterPresenter : WidgetPresenter<CounterComponent>, ICounterPresenter
     {
-        private IComponent component;
-
-        protected override IComponent Component => component;
-
-        public void Initialise()
-        {
-            // TODO: create component
-        }
-
         public void SetCount(int count)
         {
-            throw new NotImplementedException();
+            Component.Count = count;
         }
     }
 }

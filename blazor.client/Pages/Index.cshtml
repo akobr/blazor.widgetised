@@ -1,7 +1,25 @@
 ﻿@page "/"
 
+@using Blazor.Core.Components
+@using Blazor.Core.Widgets
+
+@inject IWidgetContainerRegister register
+
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
+<Container ref="myContainer" Key="@CONTAINER_KEY" />
+
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@functions
+{
+    private const string CONTAINER_KEY = "FIRST_WIDGET";
+    private ContainerComponent myContainer;
+
+    protected override void OnAfterRender()
+    {
+        register.Register(CONTAINER_KEY, myContainer);
+    }
+}
