@@ -1,6 +1,6 @@
 ﻿namespace Blazor.PureMvc
 {
-    internal interface IWidgetBuildContract
+    public interface IWidgetBuildContract
     {
         void SetState(object state);
 
