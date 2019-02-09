@@ -4,6 +4,6 @@ namespace Blazor.Core.Widgets
 {
     public interface IWidgetContainerProvider
     {
-        IContainer GetContainer(string containerKey);
+        IRenderingContainer GetContainer(string containerKey);
     }
 }

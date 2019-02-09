@@ -3,13 +3,14 @@
 @using Blazor.Core.Components
 @using Blazor.Core.Widgets
 
-@inject IWidgetContainerRegister register
+@inject IWidgetContainerRegister containers
+@implements IDisposable
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-<Container ref="myContainer" Key="@CONTAINER_KEY" />
+<ContainerComponent ref="myContainer" Key="@CONTAINER_KEY" />
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
@@ -20,6 +21,11 @@ Welcome to your new app.
 
     protected override void OnAfterRender()
     {
-        register.Register(CONTAINER_KEY, myContainer);
+        containers.Register(CONTAINER_KEY, myContainer);
+    }
+
+    public void Dispose()
+    {
+        containers.Unregister(CONTAINER_KEY);
     }
 }

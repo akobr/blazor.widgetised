@@ -1,15 +1,34 @@
-﻿namespace Blazor.PureMvc
+﻿using Blazor.PureMvc.Interactions;
+using Blazor.PureMvc.Messaging;
+using System;
+
+namespace Blazor.PureMvc.Widgets
 {
-    public abstract class WidgetMediator : IMediator, IWidgetBuildContract
+    public abstract class WidgetMediator : IWidgetMediator, IWidgetBuildContract, IActivatable<string>, IDisposable
     {
-        protected internal IPresenter presenter;
-        protected internal object state;
+        private readonly InteractionPipe interactionPipe;
+        private IWidgetPresenter presenter;
+        private object state;
+
+        public WidgetMediator()
+        {
+            interactionPipe = new InteractionPipe(null);
+        }
 
         public abstract string Key { get; }
 
+        protected IInteractionPipe InteractionPipe => interactionPipe;
+
+        protected IMessageBus MessageBus { get; private set; }
+
         public void Activate(string containerKey)
         {
-            presenter?.Activate(containerKey);
+            presenter?.Activate(new WidgetPlatformContext
+            {
+                ContainerKey = containerKey,
+                InteractionPipe = interactionPipe
+            });
+
             OnActivate();
             InitialRender();
         }
@@ -18,6 +37,14 @@
         {
             presenter?.Deactivate();
             OnDeactivate();
+        }
+
+        public void Dispose()
+        {
+            OnDestroy();
+            interactionPipe?.Dispose();
+            MessageBus?.UnregisterAll(this);
+            MessageBus = null;
         }
 
         protected TState GetState<TState>()
@@ -30,6 +57,11 @@
             return (TPresenter)presenter;
         }
 
+        protected virtual void OnInitialise()
+        {
+            // no operation ( template method )
+        }
+
         protected virtual void OnActivate()
         {
             // no operation ( template method )
@@ -40,9 +72,20 @@
             // no operation ( template method )
         }
 
+        protected virtual void OnDestroy()
+        {
+            // no operation ( template method )
+        }
+
         protected virtual void InitialRender()
         {
             // no operation ( template method )
+        }
+
+        void IWidgetBuildContract.SetPresenter(IWidgetPresenter newPresenter)
+        {
+            presenter?.Deactivate();
+            presenter = newPresenter;
         }
 
         void IWidgetBuildContract.SetState(object newState)
@@ -50,10 +93,9 @@
             state = newState;
         }
 
-        void IWidgetBuildContract.SetPresenter(IPresenter newPresenter)
+        void IWidgetBuildContract.SetMessageBus(IMessageBus bus)
         {
-            presenter?.Deactivate();
-            presenter = newPresenter;
+            MessageBus = bus;
         }
     }
 

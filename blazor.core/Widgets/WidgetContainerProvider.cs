@@ -5,20 +5,20 @@ namespace Blazor.Core.Widgets
 {
     public class WidgetContainerProvider : IWidgetContainerProvider, IWidgetContainerRegister
     {
-        private readonly IDictionary<string, IContainer> map;
+        private readonly IDictionary<string, IRenderingContainer> map;
 
         public WidgetContainerProvider()
         {
-            map = new Dictionary<string, IContainer>();
+            map = new Dictionary<string, IRenderingContainer>();
         }
 
-        public IContainer GetContainer(string containerKey)
+        public IRenderingContainer GetContainer(string containerKey)
         {
-            map.TryGetValue(containerKey, out IContainer container);
+            map.TryGetValue(containerKey, out IRenderingContainer container);
             return container;
         }
 
-        public void Register(string key, IContainer container)
+        public void Register(string key, IRenderingContainer container)
         {
             map[key] = container;
         }

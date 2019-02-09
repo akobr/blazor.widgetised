@@ -2,7 +2,7 @@
 
 namespace Blazor.Core.Components
 {
-    public interface IContainer
+    public interface IRenderingContainer
     {
         void SetContent(RenderFragment component);
     }

@@ -1,6 +1,6 @@
 ﻿namespace Blazor.Client.Widgets.Counter
 {
-    public class CounterState
+    public class CounterWidgetState
     {
         public int Count { get; set; }
     }

@@ -1,6 +1,6 @@
 ﻿namespace Blazor.Client.Widgets.Counter
 {
-    public interface ICounterPresenter
+    public interface ICounterWidgetPresenter
     {
         void SetCount(int count);
     }

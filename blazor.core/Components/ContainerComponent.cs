@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace Blazor.Core.Components
 {
-    public class ContainerComponent : ComponentBase, IContainer
+    public class ContainerComponent : ComponentBase, IRenderingContainer
     {
         private RenderFragment content;
         private string key;
@@ -11,6 +11,7 @@ namespace Blazor.Core.Components
         public string Key
         {
             get { return key; }
+
             set
             {
                 if (string.Equals(key, value, System.StringComparison.OrdinalIgnoreCase))
@@ -33,10 +34,15 @@ namespace Blazor.Core.Components
         {
             base.BuildRenderTree(builder);
 
-            int sequence = 0;
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "data-key", Key);
-            builder.AddContent(sequence++, content);
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "class", "container");
+            builder.AddAttribute(2, "data-key", Key);
+            
+            if (content != null)
+            {
+                builder.AddContent(3, content);
+            }
+
             builder.CloseElement();
         }
     }

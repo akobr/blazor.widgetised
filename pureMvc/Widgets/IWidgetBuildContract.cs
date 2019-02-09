@@ -1,9 +1,13 @@
-﻿namespace Blazor.PureMvc
+﻿using Blazor.PureMvc.Messaging;
+
+namespace Blazor.PureMvc.Widgets
 {
     public interface IWidgetBuildContract
     {
+        void SetPresenter(IWidgetPresenter presenter);
+
         void SetState(object state);
 
-        void SetPresenter(IPresenter presenter);
+        void SetMessageBus(IMessageBus bus);
     }
 }

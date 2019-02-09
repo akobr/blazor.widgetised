@@ -1,4 +1,7 @@
 ﻿using Blazor.PureMvc;
+using Blazor.PureMvc.Messaging;
+using Blazor.PureMvc.Widgets;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
@@ -20,9 +23,9 @@ namespace Blazor.Core.Widgets
             map[variantKey] = variant;
         }
 
-        public IMediator Build(string variantKey)
+        public IWidgetMediator Build(string variantKey)
         {
-            if(!map.TryGetValue(variantKey, out WidgetVariant variant))
+            if (!map.TryGetValue(variantKey, out WidgetVariant variant))
             {
                 return null;
             }
@@ -30,10 +33,10 @@ namespace Blazor.Core.Widgets
             return BuildMediator(variant);
         }
 
-        private IMediator BuildMediator(WidgetVariant variant)
+        private IWidgetMediator BuildMediator(WidgetVariant variant)
         {
             Type mediatorType = variant.MediatorType;
-            IMediator mediator = (IMediator)provider.GetService(mediatorType);
+            IWidgetMediator mediator = (IWidgetMediator)provider.GetService(mediatorType);
 
             TryFillContract(mediator, variant);
             TryInitialise(mediator);
@@ -41,19 +44,21 @@ namespace Blazor.Core.Widgets
             return mediator;
         }
 
-        private void TryFillContract(IMediator mediator, WidgetVariant variant)
+        private void TryFillContract(IWidgetMediator mediator, WidgetVariant variant)
         {
             if (!(mediator is IWidgetBuildContract contract))
             {
                 return;
             }
 
-            if(TryGetState(variant.StateType, out object state))
+            contract.SetMessageBus(provider.GetService<IMessageBus>());
+
+            if (TryGetState(variant.StateType, out object state))
             {
                 contract.SetState(state);
             }
 
-            IPresenter presenter = (IPresenter)provider.GetService(variant.PresenterType);
+            IWidgetPresenter presenter = (IWidgetPresenter)provider.GetService(variant.PresenterType);
             TryInitialise(presenter);
             contract.SetPresenter(presenter);
         }

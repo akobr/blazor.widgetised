@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Blazor.PureMvc.Messaging;
+using System;
 
 namespace Blazor.PureMvc.Interactions
 {
-    public class IInteractionPipe
+    public interface IInteractionPipe
     {
+        void Send<TMessage>(TMessage message)
+            where TMessage : IMessage;
+
+        void Register<TMessage>(Action<TMessage> handler)
+            where TMessage : IMessage;
     }
 }

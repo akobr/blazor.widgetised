@@ -1,8 +1,9 @@
-using Blazor.Client.Widgets.Counter;
+using Blazor.Client;
 using Blazor.Core.Widgets;
+using Blazor.PureMvc.Messaging;
+using Blazor.PureMvc.Widgets;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace blazor.client
 {
@@ -10,22 +11,22 @@ namespace blazor.client
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            // Message bus
+            services.AddSingleton<IMessageBus, MessageBus>();
+
+            // Widget container register and provider 
             WidgetContainerProvider containerProvider = new WidgetContainerProvider();
             services.AddSingleton<IWidgetContainerProvider>(containerProvider);
             services.AddSingleton<IWidgetContainerRegister>(containerProvider);
-            
-            WidgetFactory widgetFactory = new WidgetFactory();
-            widgetFactory.RegisterWidget("Counter", new WidgetVariant
-            {
-                MediatorType = typeof(CounterWidgetMediator),
-                PresenterType = typeof(CounterPresenter),
-                StateType = typeof(CounterState)
-            });
+
+            // Widget factory
+            services.AddSingleton<IWidgetFactory, WidgetFactory>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
+            app.RegisterWidgets();
         }
     }
 }

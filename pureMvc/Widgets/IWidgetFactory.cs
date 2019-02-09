@@ -1,6 +1,6 @@
-﻿namespace Blazor.PureMvc
+﻿namespace Blazor.PureMvc.Widgets
 {
-    public interface IWidgetFactory : IFactory<IMediator, string>
+    public interface IWidgetFactory : IFactory<IWidgetMediator, string>
     {
         // no member
     }
