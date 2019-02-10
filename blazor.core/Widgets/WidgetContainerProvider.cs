@@ -3,16 +3,16 @@ using Blazor.Core.Components;
 
 namespace Blazor.Core.Widgets
 {
-    public class WidgetContainerProvider : IWidgetContainerProvider, IWidgetContainerRegister
+    public class WidgetContainerManagement : IWidgetContainerManagement
     {
         private readonly IDictionary<string, IRenderingContainer> map;
 
-        public WidgetContainerProvider()
+        public WidgetContainerManagement()
         {
             map = new Dictionary<string, IRenderingContainer>();
         }
 
-        public IRenderingContainer GetContainer(string containerKey)
+        public IRenderingContainer Get(string containerKey)
         {
             map.TryGetValue(containerKey, out IRenderingContainer container);
             return container;

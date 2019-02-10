@@ -8,7 +8,7 @@ namespace Blazor.Core.Widgets
     public abstract class WidgetPresenter<TComponent> : IWidgetPresenter
         where TComponent : class, IComponent
     {
-        private readonly IWidgetContainerProvider provider;
+        private readonly IWidgetContainerManagement provider;
         private IRenderingContainer container;
         private IInteractionPipe interactionPipeCap;
 
@@ -16,7 +16,7 @@ namespace Blazor.Core.Widgets
 
         public void Activate(WidgetPlatformContext context)
         {
-            container = provider.GetContainer(context.ContainerKey);
+            container = provider.Get(context.ContainerKey);
             container?.SetContent(BuildFragment());
         }
 

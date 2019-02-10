@@ -11,15 +11,8 @@ namespace blazor.client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            // Message bus
             services.AddSingleton<IMessageBus, MessageBus>();
-
-            // Widget container register and provider 
-            WidgetContainerProvider containerProvider = new WidgetContainerProvider();
-            services.AddSingleton<IWidgetContainerProvider>(containerProvider);
-            services.AddSingleton<IWidgetContainerRegister>(containerProvider);
-
-            // Widget factory
+            services.AddSingleton<IWidgetContainerManagement, WidgetContainerManagement>();
             services.AddSingleton<IWidgetFactory, WidgetFactory>();
         }
 

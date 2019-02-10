@@ -6,6 +6,6 @@ namespace Blazor.Core.Widgets
 {
     public interface IWidgetPresenterBuildContract
     {
-        void SetContainerProvider(IWidgetContainerProvider containerProvider);
+        void SetContainerProvider(IWidgetContainerManagement containerProvider);
     }
 }
