@@ -1,31 +1,18 @@
 ﻿@page "/"
 
-@using Blazor.Core.Components
-@using Blazor.Core.Widgets
-
-@inject IWidgetContainerRegister containers
-@implements IDisposable
-
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-<ContainerComponent ref="myContainer" Key="@CONTAINER_KEY" />
+@* Widget container *@
+<ContainerComponent Key="FIRST_WIDGET" />
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 @functions
-{
-    private const string CONTAINER_KEY = "FIRST_WIDGET";
-    private ContainerComponent myContainer;
-
+{ 
     protected override void OnAfterRender()
     {
-        containers.Register(CONTAINER_KEY, myContainer);
-    }
-
-    public void Dispose()
-    {
-        containers.Unregister(CONTAINER_KEY);
+        // TODO: Build a widget
     }
 }

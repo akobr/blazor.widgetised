@@ -5,24 +5,30 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Core.Widgets
 {
-    public abstract class WidgetPresenter<TComponent> : IWidgetPresenter
+    public abstract class WidgetPresenter<TComponent> : IWidgetPresenter, IWidgetPresenterBuildContract
         where TComponent : class, IComponent
     {
-        private readonly IWidgetContainerManagement provider;
+        private IWidgetContainerManagement containerManagement;
+        private IInteractionPipe interactionPipe;
         private IRenderingContainer container;
-        private IInteractionPipe interactionPipeCap;
 
         public TComponent Component { get; private set; }
 
         public void Activate(WidgetPlatformContext context)
         {
-            container = provider.Get(context.ContainerKey);
+            interactionPipe = context.InteractionPipe;
+            container = containerManagement.Get(context.ContainerKey);
             container?.SetContent(BuildFragment());
         }
 
         public void Deactivate()
         {
             container?.SetContent(null);
+        }
+
+        void IWidgetPresenterBuildContract.SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement)
+        {
+            containerManagement = newContainerManagement;
         }
 
         protected virtual RenderFragment BuildFragment()
@@ -50,7 +56,7 @@ namespace Blazor.Core.Widgets
                 return;
             }
 
-            contract.SetInteractionPipe(new InteractionPipe(interactionPipeCap));
+            contract.SetInteractionPipe(new InteractionPipe(interactionPipe));
         }
     }
 }

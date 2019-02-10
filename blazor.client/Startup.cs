@@ -1,11 +1,10 @@
-using Blazor.Client;
 using Blazor.Core.Widgets;
 using Blazor.PureMvc.Messaging;
 using Blazor.PureMvc.Widgets;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace blazor.client
+namespace Blazor.Client
 {
     public class Startup
     {
@@ -14,12 +13,14 @@ namespace blazor.client
             services.AddSingleton<IMessageBus, MessageBus>();
             services.AddSingleton<IWidgetContainerManagement, WidgetContainerManagement>();
             services.AddSingleton<IWidgetFactory, WidgetFactory>();
+
+            services.RegisterWidgets();
         }
 
         public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
-            app.RegisterWidgets();
+            app.RegisterWidgetVariants();
         }
     }
 }

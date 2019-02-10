@@ -18,7 +18,7 @@ namespace Blazor.Core.Widgets
             map = new Dictionary<string, WidgetVariant>();
         }
 
-        public void RegisterWidget(string variantKey, WidgetVariant variant)
+        public void Register(string variantKey, WidgetVariant variant)
         {
             map[variantKey] = variant;
         }
@@ -38,13 +38,13 @@ namespace Blazor.Core.Widgets
             Type mediatorType = variant.MediatorType;
             IWidgetMediator mediator = (IWidgetMediator)provider.GetService(mediatorType);
 
-            TryFillContract(mediator, variant);
+            TryFillMediatorContract(mediator, variant);
             TryInitialise(mediator);
 
             return mediator;
         }
 
-        private void TryFillContract(IWidgetMediator mediator, WidgetVariant variant)
+        private void TryFillMediatorContract(IWidgetMediator mediator, WidgetVariant variant)
         {
             if (!(mediator is IWidgetBuildContract contract))
             {
@@ -59,8 +59,19 @@ namespace Blazor.Core.Widgets
             }
 
             IWidgetPresenter presenter = (IWidgetPresenter)provider.GetService(variant.PresenterType);
+            TryFillPresenterContract(presenter);
             TryInitialise(presenter);
             contract.SetPresenter(presenter);
+        }
+
+        private void TryFillPresenterContract(IWidgetPresenter presenter)
+        {
+            if (!(presenter is IWidgetPresenterBuildContract contract))
+            {
+                return;
+            }
+
+            contract.SetWidgetContainerManagement(provider.GetService<IWidgetContainerManagement>());
         }
 
         private bool TryGetState(Type stateType, out object state)

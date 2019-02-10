@@ -1,27 +1,30 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazor.Core.Widgets;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
+using System;
 
 namespace Blazor.Core.Components
 {
-    public class ContainerComponent : ComponentBase, IRenderingContainer
+    public class ContainerComponent : ComponentBase, IRenderingContainer, IDisposable
     {
         private RenderFragment content;
-        private string key;
+        private string registeredKey;
 
-        public string Key
+        [Inject]
+        protected IWidgetContainerManagement Management { get; set; }
+
+        [Parameter]
+        private string Key { get; set; }
+
+        public void SetKey(string newKey)
         {
-            get { return key; }
-
-            set
+            if (string.Equals(Key, newKey, StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(key, value, System.StringComparison.OrdinalIgnoreCase))
-                {
-                    return;
-                }
-
-                key = value;
-                StateHasChanged();
+                return;
             }
+
+            Key = newKey;
+            StateHasChanged();
         }
 
         public void SetContent(RenderFragment content)
@@ -30,13 +33,23 @@ namespace Blazor.Core.Components
             StateHasChanged();
         }
 
+        public void Dispose()
+        {
+            UnregisterKey();
+        }
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             base.BuildRenderTree(builder);
 
             builder.OpenElement(0, "div");
             builder.AddAttribute(1, "class", "container");
-            builder.AddAttribute(2, "data-key", Key);
+            
+            if (!string.IsNullOrEmpty(Key))
+            {
+                builder.AddAttribute(2, "data-key", Key);
+                RegisterKey(Key);
+            }
             
             if (content != null)
             {
@@ -44,6 +57,36 @@ namespace Blazor.Core.Components
             }
 
             builder.CloseElement();
+        }
+
+        private void RegisterKey(string key)
+        {
+            if (Management == null)
+            {
+                return;
+            }
+
+            UnregisterKey();
+
+            if (string.IsNullOrEmpty(key))
+            {
+                return;
+            }
+
+            Management.Register(key, this);
+            registeredKey = key;
+        }
+
+        private void UnregisterKey()
+        {
+            if (Management == null
+                || string.IsNullOrEmpty(registeredKey))
+            {
+                return;
+            }
+
+            Management.Unregister(registeredKey);
+            registeredKey = null;
         }
     }
 }

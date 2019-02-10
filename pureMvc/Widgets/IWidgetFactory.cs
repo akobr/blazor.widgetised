@@ -2,6 +2,6 @@
 {
     public interface IWidgetFactory : IFactory<IWidgetMediator, string>
     {
-        // no member
+        void Register(string variantKey, WidgetVariant variant);
     }
 }

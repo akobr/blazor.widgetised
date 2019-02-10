@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blazor.Core.Widgets
+﻿namespace Blazor.Core.Widgets
 {
     public interface IWidgetPresenterBuildContract
     {
-        void SetContainerProvider(IWidgetContainerManagement containerProvider);
+        void SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement);
     }
 }
