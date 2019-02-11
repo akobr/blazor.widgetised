@@ -1,0 +1,21 @@
+﻿@using Blazor.Core.Components
+@using Blazor.PureMvc.Messaging
+@inherits SystemComponent
+
+<button class="btn btn-primary" onclick="@OnClick">@Title</button>
+
+@functions
+{
+    [Parameter] protected string Title { get; set; }
+
+    public void SetTitle(string title)
+    {
+        Title = title;
+        StateHasChanged();
+    }
+
+    void OnClick()
+    {
+        InteractionPipe.Send<Messages.Click>(new Messages.Click());
+    }
+}

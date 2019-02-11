@@ -1,6 +1,6 @@
 ﻿namespace Blazor.PureMvc.Widgets
 {
-    public interface IWidgetFactory : IFactory<IWidgetMediator, string>
+    public interface IWidgetFactory : IFactory<object, string>
     {
         void Register(string variantKey, WidgetVariant variant);
     }

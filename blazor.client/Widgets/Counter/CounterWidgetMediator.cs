@@ -4,9 +4,7 @@ using Blazor.PureMvc.Widgets;
 namespace Blazor.Client.Widgets.Counter
 {
     public class CounterWidgetMediator : WidgetMediator<ICounterWidgetPresenter, CounterWidgetState>, IInitialisable
-    {
-        public override string Key => "Counter";
-
+    { 
         public void Initialise()
         {
             // Set interactions

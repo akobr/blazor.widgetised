@@ -4,7 +4,7 @@ using System;
 
 namespace Blazor.PureMvc.Widgets
 {
-    public abstract class WidgetMediator : IWidgetMediator, IWidgetBuildContract, IActivatable<string>, IDisposable
+    public abstract class WidgetMediator : IWidgetBuildContract, IActivatable<string>, IDisposable
     {
         private readonly InteractionPipe interactionPipe;
         private IWidgetPresenter presenter;
@@ -14,8 +14,6 @@ namespace Blazor.PureMvc.Widgets
         {
             interactionPipe = new InteractionPipe(null);
         }
-
-        public abstract string Key { get; }
 
         protected IInteractionPipe InteractionPipe => interactionPipe;
 

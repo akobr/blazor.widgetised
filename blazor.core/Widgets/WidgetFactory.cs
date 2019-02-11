@@ -23,7 +23,7 @@ namespace Blazor.Core.Widgets
             map[variantKey] = variant;
         }
 
-        public IWidgetMediator Build(string variantKey)
+        public object Build(string variantKey)
         {
             if (!map.TryGetValue(variantKey, out WidgetVariant variant))
             {
@@ -33,10 +33,10 @@ namespace Blazor.Core.Widgets
             return BuildMediator(variant);
         }
 
-        private IWidgetMediator BuildMediator(WidgetVariant variant)
+        private object BuildMediator(WidgetVariant variant)
         {
             Type mediatorType = variant.MediatorType;
-            IWidgetMediator mediator = (IWidgetMediator)provider.GetService(mediatorType);
+            object mediator = provider.GetService(mediatorType);
 
             TryFillMediatorContract(mediator, variant);
             TryInitialise(mediator);
@@ -44,7 +44,7 @@ namespace Blazor.Core.Widgets
             return mediator;
         }
 
-        private void TryFillMediatorContract(IWidgetMediator mediator, WidgetVariant variant)
+        private void TryFillMediatorContract(object mediator, WidgetVariant variant)
         {
             if (!(mediator is IWidgetBuildContract contract))
             {

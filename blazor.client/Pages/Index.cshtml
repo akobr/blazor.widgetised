@@ -1,18 +1,25 @@
 ﻿@page "/"
+@using Blazor.PureMvc
+@using Blazor.PureMvc.Widgets
+@inject IWidgetFactory factory
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
 @* Widget container *@
-<ContainerComponent Key="FIRST_WIDGET" />
+<ContainerComponent Key="@CONTAINER_NAME" />
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 @functions
-{ 
+{
+    private const string CONTAINER_NAME = "FIRST_WIDGET";
+
     protected override void OnAfterRender()
     {
-        // TODO: Build a widget
+        object mediator = factory.Build("Button");
+        IActivatable<string> activatable = (IActivatable<string>)mediator;
+        //activatable.Activate(CONTAINER_NAME);
     }
 }

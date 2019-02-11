@@ -1,4 +1,5 @@
-﻿using Blazor.Client.Widgets.Counter;
+﻿using Blazor.Client.Widgets.Button;
+using Blazor.Client.Widgets.Counter;
 using Blazor.PureMvc.Widgets;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,12 @@ namespace Blazor.Client
                 MediatorType = typeof(CounterWidgetMediator),
                 PresenterType = typeof(CounterWidgetPresenter),
                 StateType = typeof(CounterWidgetState)
+            });
+
+            widgetFactory.Register("Button", new WidgetVariant
+            {
+                MediatorType = typeof(ButtonWidgetMediator),
+                PresenterType = typeof(ButtonWidgetPresenter)
             });
         }
     }
