@@ -1,0 +1,14 @@
+﻿<div class="alert alert-secondary mt-4" role="alert">
+    <span class="oi oi-pencil mr-2" aria-hidden="true"></span>
+    <strong>@Title</strong>
+
+    <span class="text-nowrap">
+        The code is available at
+        <a target="_blank" class="font-weight-bold" href="https://github.com/akobr/blazor.pureMVC">git.hub/blazor.pureMVC</a>
+    </span>
+</div>
+
+@functions {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter] string Title { get; set; }
+}

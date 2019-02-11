@@ -1,11 +1,11 @@
-﻿using Blazor.Core.Components;
-using Blazor.PureMvc.Interactions;
-using Blazor.PureMvc.Widgets;
+﻿using System;
+using Blazor.Core.Components;
+using Blazor.Core.Interactions;
 using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Core.Widgets
 {
-    public abstract class WidgetPresenter<TComponent> : IWidgetPresenter, IWidgetPresenterBuildContract
+    public class WidgetPresenter<TComponent> : IWidgetPresenter, IWidgetPresenterBuildContract
         where TComponent : class, IComponent
     {
         private IWidgetContainerManagement containerManagement;
@@ -19,6 +19,11 @@ namespace Blazor.Core.Widgets
             interactionPipe = context.InteractionPipe;
             container = containerManagement.Get(context.ContainerKey);
             container?.SetContent(BuildFragment());
+        }
+
+        public void Activate(Action<RenderFragment> fragmentAction)
+        {
+            fragmentAction?.Invoke(BuildFragment());
         }
 
         public void Deactivate()

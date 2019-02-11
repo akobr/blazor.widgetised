@@ -1,0 +1,10 @@
+﻿<p>
+    Last update at @LastUpdate.ToShortTimeString(), next will be in <strong>@SecondsToNextUpdate</strong> seconds.
+</p>
+
+@functions
+{
+    [Parameter] protected DateTime LastUpdate { get; set; }
+
+    [Parameter] protected int SecondsToNextUpdate { get; set; }
+}

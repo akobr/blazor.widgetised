@@ -1,6 +1,4 @@
-﻿using Blazor.PureMvc;
-using Blazor.PureMvc.Messaging;
-using Blazor.PureMvc.Widgets;
+﻿using Blazor.Core.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -52,6 +50,7 @@ namespace Blazor.Core.Widgets
             }
 
             contract.SetMessageBus(provider.GetService<IMessageBus>());
+            contract.SetCustomisation(variant.Customisation);
 
             if (TryGetState(variant.StateType, out object state))
             {

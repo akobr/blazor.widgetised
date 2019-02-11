@@ -11,10 +11,13 @@ namespace Blazor.Core.Components
         private string registeredKey;
 
         [Inject]
-        protected IWidgetContainerManagement Management { get; set; }
+        private IWidgetContainerManagement Management { get; set; }
 
         [Parameter]
         private string Key { get; set; }
+
+        [Parameter]
+        private RenderFragment ChildContent { get; set; }
 
         public void SetKey(string newKey)
         {
@@ -43,7 +46,7 @@ namespace Blazor.Core.Components
             base.BuildRenderTree(builder);
 
             builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", "container");
+            builder.AddAttribute(1, "class", "system-container");
             
             if (!string.IsNullOrEmpty(Key))
             {
@@ -55,8 +58,17 @@ namespace Blazor.Core.Components
             {
                 builder.AddContent(3, content);
             }
+            else if (ChildContent != null)
+            {
+                builder.AddContent(3, ChildContent);
+            }
 
             builder.CloseElement();
+        }
+
+        protected override void OnAfterRender()
+        {
+            base.OnAfterRender();
         }
 
         private void RegisterKey(string key)

@@ -1,6 +1,5 @@
 using Blazor.Core.Widgets;
-using Blazor.PureMvc.Messaging;
-using Blazor.PureMvc.Widgets;
+using Blazor.Core.Messaging;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

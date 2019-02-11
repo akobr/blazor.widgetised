@@ -1,4 +1,4 @@
-﻿using Blazor.PureMvc.Interactions;
+﻿using Blazor.Core.Interactions;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,9 @@ namespace Blazor.Core.Components
 
         private void TryFillContractOfChildren()
         {
-            if (interactionPipe == null)
+            if (interactionPipe == null
+                || children == null
+                || children.Count < 1)
             {
                 return;
             }

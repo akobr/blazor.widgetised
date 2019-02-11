@@ -1,6 +1,6 @@
-﻿using Blazor.PureMvc.Messaging;
+﻿using Blazor.Core.Messaging;
 
-namespace Blazor.PureMvc.Widgets
+namespace Blazor.Core.Widgets
 {
     public interface IWidgetBuildContract
     {

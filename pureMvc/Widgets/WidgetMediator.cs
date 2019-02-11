@@ -9,6 +9,7 @@ namespace Blazor.PureMvc.Widgets
         private readonly InteractionPipe interactionPipe;
         private IWidgetPresenter presenter;
         private object state;
+        private object customisation;
 
         public WidgetMediator()
         {
@@ -43,6 +44,11 @@ namespace Blazor.PureMvc.Widgets
             interactionPipe?.Dispose();
             MessageBus?.UnregisterAll(this);
             MessageBus = null;
+        }
+
+        protected TCustomisation GetCustomisation<TCustomisation>()
+        {
+            return (TCustomisation)customisation;
         }
 
         protected TState GetState<TState>()
@@ -85,10 +91,15 @@ namespace Blazor.PureMvc.Widgets
             presenter?.Deactivate();
             presenter = newPresenter;
         }
-
+        
         void IWidgetBuildContract.SetState(object newState)
         {
             state = newState;
+        }
+
+        void IWidgetBuildContract.SetCustomisation(object newCustomisation)
+        {
+            customisation = newCustomisation;
         }
 
         void IWidgetBuildContract.SetMessageBus(IMessageBus bus)

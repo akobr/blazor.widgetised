@@ -1,4 +1,4 @@
-﻿using Blazor.PureMvc.Interactions;
+﻿using Blazor.Core.Interactions;
 
 namespace Blazor.Core.Components
 {

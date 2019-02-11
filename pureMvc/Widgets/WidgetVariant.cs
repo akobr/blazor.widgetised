@@ -9,5 +9,7 @@ namespace Blazor.PureMvc.Widgets
         public Type PresenterType { get; set; }
 
         public Type StateType { get; set; }
+
+        public object Customisation { get; set; }
     }
 }

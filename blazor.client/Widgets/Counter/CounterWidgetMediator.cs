@@ -1,5 +1,5 @@
-﻿using Blazor.PureMvc;
-using Blazor.PureMvc.Widgets;
+﻿using Blazor.Core;
+using Blazor.Core.Widgets;
 
 namespace Blazor.Client.Widgets.Counter
 {

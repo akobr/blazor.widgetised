@@ -1,4 +1,4 @@
-﻿using Blazor.PureMvc.Messaging;
+﻿using Blazor.Core.Messaging;
 
 namespace Blazor.Client.Widgets.Counter
 {

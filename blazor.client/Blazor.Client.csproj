@@ -18,4 +18,8 @@
     <ProjectReference Include="..\blazor.core\Blazor.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Widgets\List\" />
+  </ItemGroup>
+
 </Project>
