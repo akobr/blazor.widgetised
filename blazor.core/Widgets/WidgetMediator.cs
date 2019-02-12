@@ -1,4 +1,5 @@
 ﻿using Blazor.Core.Interactions;
+using Blazor.Core.Logging;
 using Blazor.Core.Messaging;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -37,6 +38,7 @@ namespace Blazor.Core.Widgets
             }
 
             isActive = true;
+            ConsoleLogger.Debug($"DEBUG: A widget '{this.GetType().Name}' is activating in container '{containerKey}'.");
             presenter?.ActivateInContainer(new PresenterActivateInContainerContext
             {
                 ContainerKey = containerKey,
@@ -57,6 +59,7 @@ namespace Blazor.Core.Widgets
             }
 
             isActive = true;
+            ConsoleLogger.Debug($"DEBUG: A widget '{this.GetType().Name}' is inlining.");
             presenter?.ActivateInline(new PresenterActivateInlineContext
             {
                 RenderAction = context,

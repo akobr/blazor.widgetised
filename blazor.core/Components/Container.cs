@@ -1,4 +1,5 @@
-﻿using Blazor.Core.Widgets;
+﻿using Blazor.Core.Logging;
+using Blazor.Core.Widgets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
 using System;
@@ -86,6 +87,7 @@ namespace Blazor.Core.Components
                 return;
             }
 
+            ConsoleLogger.Debug($"DEBUG: Container with key '{key}' is registering.");
             Management.Register(key, this);
             registeredKey = key;
         }
