@@ -1,6 +1,7 @@
 ﻿using Blazor.Client.Widgets;
 using Blazor.Client.Widgets.Button;
 using Blazor.Client.Widgets.Counter;
+using Blazor.Client.Widgets.List;
 using Blazor.Client.Widgets.RandomUpdator;
 using Blazor.Client.Widgets.Text;
 using Blazor.Core;
@@ -24,6 +25,8 @@ namespace Blazor.Client
             services.AddTransient<CounterWidgetMediator>();
             services.AddTransient<CounterWidgetPresenter>();
             services.AddTransient<CounterWidgetState>();
+
+            services.AddTransient<ListWidgetMediator>();
         }
 
         public static void RegisterWidgetVariants(this IComponentsApplicationBuilder appBuilder)
@@ -63,6 +66,11 @@ namespace Blazor.Client
                 MediatorType = typeof(CounterWidgetMediator),
                 PresenterType = typeof(CounterWidgetPresenter),
                 StateType = typeof(CounterWidgetState)
+            });
+
+            widgetFactory.Register(WidgetVariants.LIST, new WidgetVariant
+            {
+                MediatorType = typeof(ListWidgetMediator)
             });
         }
     }

@@ -20,7 +20,7 @@ namespace Blazor.Client.Widgets.RandomUpdator
                 return;
             }
 
-            int seconds = randomGenerator.Next(4, 12);
+            int seconds = randomGenerator.Next(4, 13);
             Render(seconds);
 
             Task.Run(async () =>

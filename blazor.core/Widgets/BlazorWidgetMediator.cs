@@ -14,14 +14,25 @@ namespace Blazor.Core.Widgets
 
         IWidgetPresenter IWidgetPresenterProvider.Presenter => autoPresenter;
 
-        // TODO: cache
-        protected TComponent Component => GetPresenter<WidgetPresenter<TComponent>>().Component;
+        protected TComponent Component => autoPresenter.Component;
     }
 
     public abstract class BlazorWidgetMediator<TComponent, TState> : BlazorWidgetMediator<TComponent>
         where TComponent : class, IComponent
     {
-        // TODO: cache
-        protected TState State => GetState<TState>();
+        private TState typedState;
+
+        protected TState State
+        {
+            get
+            {
+                if (typedState == null)
+                {
+                    typedState = GetState<TState>();
+                }
+
+                return typedState;
+            }
+        }
     }
 }

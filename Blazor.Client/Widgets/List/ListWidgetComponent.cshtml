@@ -1,0 +1,36 @@
+﻿@addTagHelper *, Blazor.Core
+@using Blazor.Core.Components
+@using Blazor.Core.Messaging
+
+@inherits SystemComponent
+
+<ul>
+    @for (int i = 0; i < ItemsCount; i++)
+    {
+        <li><Container Key="@($"ITEM_CONTAINER_{i}")" /></li>
+    }
+</ul>
+
+<button class="btn btn-primary" onclick="@OnRefreshClick">Reload</button>
+
+@functions
+{
+    [Parameter]
+    protected int ItemsCount { get; set; }
+
+    public void CreateItems(int itemsCount)
+    {
+        ItemsCount = itemsCount;
+        StateHasChanged();
+    }
+
+    void OnRefreshClick()
+    {
+        InteractionPipe.Send<Messages.Click>(new Messages.Click());
+    }
+
+    protected override void OnAfterRender()
+    {
+        InteractionPipe.Send<Message<int>>(new Message<int>("ItemsAreReady", ItemsCount));
+    }
+}

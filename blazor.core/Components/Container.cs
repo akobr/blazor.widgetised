@@ -21,12 +21,13 @@ namespace Blazor.Core.Components
 
         public void SetKey(string newKey)
         {
-            if (string.Equals(Key, newKey, StringComparison.OrdinalIgnoreCase))
+            if (IsKeySameLastPrevious(newKey))
             {
                 return;
             }
 
             Key = newKey;
+            RegisterKey(newKey);
             StateHasChanged();
         }
 
@@ -38,7 +39,12 @@ namespace Blazor.Core.Components
 
         public void Dispose()
         {
-            UnregisterKey();
+            UnregisterPreviousKey();
+        }
+
+        protected override void OnParametersSet()
+        {
+            RegisterKey(Key);
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -47,13 +53,12 @@ namespace Blazor.Core.Components
 
             builder.OpenElement(0, "div");
             builder.AddAttribute(1, "class", "system-container");
-            
+
             if (!string.IsNullOrEmpty(Key))
             {
                 builder.AddAttribute(2, "data-key", Key);
-                RegisterKey(Key);
             }
-            
+
             if (content != null)
             {
                 builder.AddContent(3, content);
@@ -66,19 +71,15 @@ namespace Blazor.Core.Components
             builder.CloseElement();
         }
 
-        protected override void OnAfterRender()
-        {
-            base.OnAfterRender();
-        }
-
         private void RegisterKey(string key)
         {
-            if (Management == null)
+            if (Management == null
+                || IsKeySameLastPrevious(key))
             {
                 return;
             }
 
-            UnregisterKey();
+            UnregisterPreviousKey();
 
             if (string.IsNullOrEmpty(key))
             {
@@ -89,16 +90,21 @@ namespace Blazor.Core.Components
             registeredKey = key;
         }
 
-        private void UnregisterKey()
+        private void UnregisterPreviousKey()
         {
             if (Management == null
-                || string.IsNullOrEmpty(registeredKey))
+                || registeredKey == null)
             {
                 return;
             }
 
             Management.Unregister(registeredKey);
             registeredKey = null;
+        }
+
+        private bool IsKeySameLastPrevious(string key)
+        {
+            return string.Equals(key, registeredKey, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

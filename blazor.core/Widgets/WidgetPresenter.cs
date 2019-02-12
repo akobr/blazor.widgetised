@@ -1,6 +1,7 @@
 ﻿using System;
 using Blazor.Core.Components;
 using Blazor.Core.Interactions;
+using Blazor.Core.Logging;
 using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Core.Widgets
@@ -18,6 +19,12 @@ namespace Blazor.Core.Widgets
         {
             interactionPipe = context.InteractionPipe;
             container = containerManagement.Get(context.ContainerKey);
+
+            if (container == null)
+            {
+                ConsoleLogger.Debug($"WARNING: No container for key '{context.ContainerKey}' has been found.");
+            }
+
             container?.SetContent(BuildFragment(context.ContinueWith));
         }
 

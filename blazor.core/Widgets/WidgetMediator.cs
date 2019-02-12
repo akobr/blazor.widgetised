@@ -154,13 +154,37 @@ namespace Blazor.Core.Widgets
 
     public abstract class WidgetMediator<TPresenter> : WidgetMediator
     {
-        // TODO: cache
-        protected TPresenter Presenter => GetPresenter<TPresenter>();
+        private TPresenter typedPresenter;
+
+        protected TPresenter Presenter
+        {
+            get
+            {
+                if (typedPresenter == null)
+                {
+                    typedPresenter = GetPresenter<TPresenter>();
+                }
+
+                return typedPresenter;
+            }
+        }
     }
 
     public abstract class WidgetMediator<TPresenter, TState> : WidgetMediator<TPresenter>
     {
-        // TODO: cache
-        protected TState State => GetState<TState>();
+        private TState typedState;
+
+        protected TState State
+        {
+            get
+            {
+                if (typedState == null)
+                {
+                    typedState = GetState<TState>();
+                }
+
+                return typedState;
+            }
+        }
     }
 }

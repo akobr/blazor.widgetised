@@ -1,16 +1,23 @@
 ﻿@using Blazor.Core.Components
 @inherits SystemComponent
 
-<h1>Counter</h1>
+<h1>Counter <sub>(as widget)</sub></h1>
 
-<p>Current count: @Count</p>
+<p>Value: <strong>@Count</strong></p>
 
-<button class="btn btn-primary" onclick="OnButtonUp">Up</button>
-<button class="btn btn-primary" onclick="OnButtonDown">Down</button>
+<button class="btn btn-primary" onclick="@OnButtonUp">Up</button>
+<button class="btn btn-primary" onclick="@OnButtonDown">Down</button>
 
 @functions
 {
-    public int Count { get; set; }
+    [Parameter]
+    protected int Count { get; set; }
+
+    public void SetCount(int count)
+    {
+        Count = count;
+        StateHasChanged();
+    }
 
     void OnButtonUp()
     {

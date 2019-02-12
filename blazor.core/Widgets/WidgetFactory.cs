@@ -1,4 +1,5 @@
-﻿using Blazor.Core.Messaging;
+﻿using Blazor.Core.Logging;
+using Blazor.Core.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,17 @@ namespace Blazor.Core.Widgets
         {
             if (!map.TryGetValue(variantKey, out WidgetVariant variant))
             {
+                ConsoleLogger.Debug($"WARNING: No widget variant for the key '{variantKey}'.");
+                return null;
+            }
+
+            return BuildMediator(variant);
+        }
+
+        public object Build(WidgetVariant variant)
+        {
+            if (variant == null)
+            {
                 return null;
             }
 
@@ -38,6 +50,11 @@ namespace Blazor.Core.Widgets
 
             TryFillMediatorContract(mediator, variant);
             TryInitialise(mediator);
+
+            if (mediator == null)
+            {
+                ConsoleLogger.Debug($"ERROR: No mediator for a widget of type '{variant.MediatorType.Name}'.");
+            }
 
             return mediator;
         }
@@ -66,6 +83,12 @@ namespace Blazor.Core.Widgets
 
             TryFillPresenterContract(presenter);
             TryInitialise(presenter);
+
+            if (presenter == null)
+            {
+                ConsoleLogger.Debug($"WARNING: No presenter for a widget of type '{variant.MediatorType.Name}'.");
+            }
+
             contract.SetPresenter(presenter);
         }
 
@@ -112,5 +135,7 @@ namespace Blazor.Core.Widgets
 
             initialisable.Initialise();
         }
+
+        
     }
 }
