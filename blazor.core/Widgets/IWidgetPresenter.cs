@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-
-namespace Blazor.Core.Widgets
+﻿namespace Blazor.Core.Widgets
 {
-    public interface IWidgetPresenter : IActivatable<WidgetPlatformContext>
+    public interface IWidgetPresenter
     {
-        void Activate(Action<RenderFragment> fragmentAction);
+        void ActivateInContainer(PresenterActivateInContainerContext context);
+
+        void ActivateInline(PresenterActivateInlineContext context);
+
+        void Deactivate();
     }
 }

@@ -1,0 +1,12 @@
+﻿<p>@Text <sub>(powered by widget)</sub></p>
+
+@functions
+{
+    [Parameter] protected string Text { get; set; }
+
+    public void SetText(string text)
+    {
+        Text = text;
+        StateHasChanged();
+    }
+}

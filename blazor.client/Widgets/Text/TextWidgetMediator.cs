@@ -1,6 +1,12 @@
-﻿namespace Blazor.Client.Widgets.Text
+﻿using Blazor.Core.Widgets;
+
+namespace Blazor.Client.Widgets.Text
 {
-    public class TextWidgetMediator
+    public class TextWidgetMediator : BlazorWidgetMediator<TextComponent>
     {
+        protected override void InitialRender()
+        {
+            Component.SetText(GetCustomisation<TextWidgetCustomisation>().Text);
+        }
     }
 }

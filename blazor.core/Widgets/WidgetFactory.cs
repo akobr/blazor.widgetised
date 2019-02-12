@@ -57,7 +57,13 @@ namespace Blazor.Core.Widgets
                 contract.SetState(state);
             }
 
-            IWidgetPresenter presenter = (IWidgetPresenter)provider.GetService(variant.PresenterType);
+            if (!TryGetPresenter(variant.PresenterType, out IWidgetPresenter presenter)
+                && mediator is IWidgetPresenterProvider presenterProvider)
+            {
+                // TODO: solve this in more elegant way
+                presenter = presenterProvider.Presenter;
+            }
+
             TryFillPresenterContract(presenter);
             TryInitialise(presenter);
             contract.SetPresenter(presenter);
@@ -82,6 +88,18 @@ namespace Blazor.Core.Widgets
             }
 
             state = provider.GetService(stateType);
+            return true;
+        }
+
+        private bool TryGetPresenter(Type presenterType, out IWidgetPresenter presenter)
+        {
+            if(presenterType == null)
+            {
+                presenter = null;
+                return false;
+            }
+
+            presenter = (IWidgetPresenter)provider.GetService(presenterType);
             return true;
         }
 

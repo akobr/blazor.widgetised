@@ -5,51 +5,85 @@ using System;
 
 namespace Blazor.Core.Widgets
 {
-    public abstract class WidgetMediator
-        : IWidgetBuildContract, IDisposable,
-        IActivatable<string>, IActivatable<Action<RenderFragment>>
+    public abstract class WidgetMediator : IWidgetBuildContract, IInitialisable, IActivatable<string>, IActivatable<Action<RenderFragment>>, IDisposable
     {
         private readonly InteractionPipe interactionPipe;
         private IWidgetPresenter presenter;
         private object state;
         private object customisation;
+        private bool isActive;
 
         public WidgetMediator()
         {
             interactionPipe = new InteractionPipe(null);
         }
 
+        protected bool IsActive => isActive;
+
         protected IInteractionPipe InteractionPipe => interactionPipe;
 
         protected IMessageBus MessageBus { get; private set; }
 
+        public void Initialise()
+        {
+            OnInitialise();
+        }
+
         public void Activate(string containerKey)
         {
-            presenter?.Activate(new WidgetPlatformContext
+            if (isActive)
+            {
+                return;
+            }
+
+            isActive = true;
+            presenter?.ActivateInContainer(new PresenterActivateInContainerContext
             {
                 ContainerKey = containerKey,
-                InteractionPipe = interactionPipe
-            });
-
-            OnActivate();
-            InitialRender();
+                InteractionPipe = interactionPipe,
+                ContinueWith = () =>
+                {
+                    OnActivate();
+                    InitialRender();
+                }
+            }); 
         }
 
         public void Activate(Action<RenderFragment> context)
         {
-            presenter?.Activate(context);
-            OnActivate();
-            InitialRender();
+            if (isActive)
+            {
+                return;
+            }
+
+            isActive = true;
+            presenter?.ActivateInline(new PresenterActivateInlineContext
+            {
+                RenderAction = context,
+                InteractionPipe = interactionPipe,
+                ContinueWith = () =>
+                {
+                    OnActivate();
+                    InitialRender();
+                }
+            });
         }
 
         public void Deactivate()
         {
+            if (!isActive)
+            {
+                return;
+            }
+
+            isActive = false;
             presenter?.Deactivate();
             OnDeactivate();
         }
 
         public void Dispose()
         {
+            Deactivate();
             OnDestroy();
             interactionPipe?.Dispose();
             MessageBus?.UnregisterAll(this);

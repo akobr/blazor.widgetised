@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Core.Widgets
 {
-    public class WidgetInlinePlatformContext : WidgetPlatformContext
+    public class WidgetInlinePlatformContext : PresenterActivateInContainerContext
     {
         public RenderFragment Fragment { get; set; }
     }

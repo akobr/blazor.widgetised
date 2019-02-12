@@ -6,7 +6,7 @@ namespace Blazor.Client.Widgets.Button
     {
         public void SetTitle(string title)
         {
-            Component.SetTitle(title);
+            Component?.SetTitle(title);
         }
     }
 }

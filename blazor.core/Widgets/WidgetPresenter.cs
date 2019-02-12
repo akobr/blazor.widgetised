@@ -14,21 +14,23 @@ namespace Blazor.Core.Widgets
 
         public TComponent Component { get; private set; }
 
-        public void Activate(WidgetPlatformContext context)
+        public void ActivateInContainer(PresenterActivateInContainerContext context)
         {
             interactionPipe = context.InteractionPipe;
             container = containerManagement.Get(context.ContainerKey);
-            container?.SetContent(BuildFragment());
+            container?.SetContent(BuildFragment(context.ContinueWith));
         }
 
-        public void Activate(Action<RenderFragment> fragmentAction)
+        public void ActivateInline(PresenterActivateInlineContext context)
         {
-            fragmentAction?.Invoke(BuildFragment());
+            interactionPipe = context.InteractionPipe;
+            context.RenderAction?.Invoke(BuildFragment(context.ContinueWith));
         }
 
         public void Deactivate()
         {
             container?.SetContent(null);
+            container = null;
         }
 
         void IWidgetPresenterBuildContract.SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement)
@@ -36,22 +38,21 @@ namespace Blazor.Core.Widgets
             containerManagement = newContainerManagement;
         }
 
-        protected virtual RenderFragment BuildFragment()
+        protected virtual RenderFragment BuildFragment(Action continueActivation)
         {
             return (builder) =>
             {
                 builder.OpenComponent<TComponent>(0);
-                builder.AddComponentReferenceCapture(1, RegisterComponent);
+                builder.AddComponentReferenceCapture(1, (componentRef) =>
+                {
+                    TComponent component = (TComponent)componentRef;
+                    Component = component;
+                    TryFillContract(component);
+                    continueActivation?.Invoke();
+
+                });
                 builder.CloseComponent();
             };
-        }
-
-        private void RegisterComponent(object componentRef)
-        {
-            TComponent component = (TComponent)componentRef;
-            Component = component;
-
-            TryFillContract(component);
         }
 
         private void TryFillContract(TComponent component)

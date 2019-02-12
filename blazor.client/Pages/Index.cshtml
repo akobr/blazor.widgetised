@@ -9,12 +9,23 @@
 A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynamically built on the fly <strong>in a container</strong>.
 
 <h3>Inline widget</h3>
-<p>TODO</p>
+<Widget Variant="@WidgetVariants.SHOW_WIDGET" /> 
 
-<h3>Widget container</h3>
-<ContainerComponent Key="@DELAYED_CONTAINER">
-    This content will be <strong>filled in @seconds seconds</strong> with <i>RandomUpdator</i> widget.
-</ContainerComponent>
+<h3>Widget containers</h3>
+<div style="margin: 5px 0px;">
+    <Container Key="FIRST_WIDGET_CONTAINER">
+        <div style="background-color: LightSalmon;">
+            <i>Click on the button above to show a text widget here.</i>
+        </div>
+    </Container>
+</div>
+<div style="margin: 5px 0px;">
+    <Container Key="@DELAYED_CONTAINER">
+        <div style="background-color: LightSalmon;">
+            This content will be <strong>filled in @seconds seconds</strong> with <i>RandomUpdator</i> widget.
+        </div>
+    </Container>
+</div>
 
 <h3>Child component</h3>
 <LinkToGitHub Title="Do you want to know more?" />
@@ -57,7 +68,7 @@ A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynam
         }
 
         // Manual activation of widget
-        object mediator = factory.Build(WidgetVariants.SHOW_WIDGET);
+        object mediator = factory.Build(WidgetVariants.RANDOM_UPDATOR);
         IActivatable<string> activatable = (IActivatable<string>)mediator;
         activatable.Activate(DELAYED_CONTAINER);
     }

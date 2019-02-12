@@ -1,10 +1,19 @@
 ﻿<p>
-    Last update at @LastUpdate.ToShortTimeString(), next will be in <strong>@SecondsToNextUpdate</strong> seconds.
+    Last update at @LastUpdate.ToString("hh:mm:ss"), next will be in <strong>@SecondsToNextUpdate</strong> seconds.
 </p>
 
 @functions
 {
-    [Parameter] protected DateTime LastUpdate { get; set; }
+    [Parameter]
+    protected DateTime LastUpdate { get; set; }
 
-    [Parameter] protected int SecondsToNextUpdate { get; set; }
+    [Parameter]
+    protected int SecondsToNextUpdate { get; set; }
+
+    public void SetModel(DateTime updateTime, int secondsToNext)
+    {
+        LastUpdate = updateTime;
+        SecondsToNextUpdate = secondsToNext;
+        StateHasChanged();
+    }
 }
