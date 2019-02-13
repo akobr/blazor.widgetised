@@ -5,7 +5,7 @@ using System;
 
 namespace Blazor.Core.Components
 {
-    public class Widget : ComponentBase
+    public class Widget : ComponentBase, IDisposable
     {
         private object activeWidget;
         private string previousVariant;
@@ -15,6 +15,12 @@ namespace Blazor.Core.Components
 
         [Parameter]
         protected string Variant { get; set; }
+
+        public void Dispose()
+        {
+            DestroyWidget(activeWidget);
+            activeWidget = null;
+        }
 
         protected override void OnParametersSet()
         {
@@ -28,14 +34,16 @@ namespace Blazor.Core.Components
             activeWidget = Factory.Build(Variant);
         }
 
-        private void DestroyWidget(object activeWidget)
+        private void DestroyWidget(object widget)
         {
-            if (activeWidget is IActivatable<Action<RenderFragment>> activation)
+            if (widget == null)
             {
-                activation.Deactivate();
+                return;
             }
 
-            if (activeWidget is IDisposable dispose)
+            ((IActivatable<Action<RenderFragment>>)widget).Deactivate();
+
+            if (widget is IDisposable dispose)
             {
                 dispose.Dispose();
             }

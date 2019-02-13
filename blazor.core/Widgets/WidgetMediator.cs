@@ -12,14 +12,13 @@ namespace Blazor.Core.Widgets
         private IWidgetPresenter presenter;
         private object state;
         private object customisation;
-        private bool isActive;
 
         public WidgetMediator()
         {
             interactionPipe = new InteractionPipe(null);
         }
 
-        protected bool IsActive => isActive;
+        protected bool IsActive { get; private set; }
 
         protected IInteractionPipe InteractionPipe => interactionPipe;
 
@@ -32,13 +31,13 @@ namespace Blazor.Core.Widgets
 
         public void Activate(string containerKey)
         {
-            if (isActive)
+            if (IsActive)
             {
                 return;
             }
 
-            isActive = true;
-            ConsoleLogger.Debug($"DEBUG: A widget '{this.GetType().Name}' is activating in container '{containerKey}'.");
+            IsActive = true;
+            ConsoleLogger.Debug($"DEBUG: A widget '{GetType().Name}' is activating in container '{containerKey}'.");
             presenter?.ActivateInContainer(new PresenterActivateInContainerContext
             {
                 ContainerKey = containerKey,
@@ -53,12 +52,12 @@ namespace Blazor.Core.Widgets
 
         public void Activate(Action<RenderFragment> context)
         {
-            if (isActive)
+            if (IsActive)
             {
                 return;
             }
 
-            isActive = true;
+            IsActive = true;
             ConsoleLogger.Debug($"DEBUG: A widget '{this.GetType().Name}' is inlining.");
             presenter?.ActivateInline(new PresenterActivateInlineContext
             {
@@ -74,12 +73,12 @@ namespace Blazor.Core.Widgets
 
         public void Deactivate()
         {
-            if (!isActive)
+            if (!IsActive)
             {
                 return;
             }
 
-            isActive = false;
+            IsActive = false;
             presenter?.Deactivate();
             OnDeactivate();
         }

@@ -5,7 +5,33 @@ using System.Collections.Generic;
 
 namespace Blazor.Core.Components
 {
-    public class SystemComponent : ComponentBase, IComponentBuildContract, IDisposable
+    public abstract class SystemComponent<TModel> : SystemComponent
+    {
+        protected TModel Model { get; private set; }
+
+        public void SetModel(TModel model)
+        {
+            if (Model != null && !IsModifiedModel(model))
+            {
+                return;
+            }
+            
+            OnModelChanged();
+            StateHasChanged();
+        }
+
+        protected virtual bool IsModifiedModel(TModel newModel)
+        {
+            return true;
+        }
+
+        protected virtual void OnModelChanged()
+        {
+            // no operation ( template method )
+        }
+    }
+
+    public abstract class SystemComponent : ComponentBase, IComponentBuildContract, IDisposable
     {
         private ICollection<IComponent> children;
         private InteractionPipe interactionPipe;
@@ -31,8 +57,7 @@ namespace Blazor.Core.Components
 
         protected override void OnAfterRender()
         {
-            base.OnAfterRender();
-            TryFillContractOfChildren();
+            TryFillBuildContractOfChildren();
         }
 
         void IComponentBuildContract.SetInteractionPipe(InteractionPipe newPipe)
@@ -40,11 +65,9 @@ namespace Blazor.Core.Components
             interactionPipe = newPipe;
         }
 
-        private void TryFillContractOfChildren()
+        private void TryFillBuildContractOfChildren()
         {
-            if (interactionPipe == null
-                || children == null
-                || children.Count < 1)
+            if (interactionPipe == null || children?.Count < 1)
             {
                 return;
             }

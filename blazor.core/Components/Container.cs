@@ -74,8 +74,7 @@ namespace Blazor.Core.Components
 
         private void RegisterKey(string key)
         {
-            if (Management == null
-                || IsKeySameLastPrevious(key))
+            if (IsKeySameLastPrevious(key))
             {
                 return;
             }
@@ -94,8 +93,7 @@ namespace Blazor.Core.Components
 
         private void UnregisterPreviousKey()
         {
-            if (Management == null
-                || registeredKey == null)
+            if (registeredKey == null)
             {
                 return;
             }
