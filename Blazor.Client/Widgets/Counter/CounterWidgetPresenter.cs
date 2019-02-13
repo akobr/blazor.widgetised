@@ -6,7 +6,7 @@ namespace Blazor.Client.Widgets.Counter
     {
         public void SetCount(int count)
         {
-            Component.SetCount(count);
+            Component.Count = count;
         }
     }
 }

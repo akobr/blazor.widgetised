@@ -4,6 +4,8 @@ using Blazor.Core;
 using Blazor.Core.Messaging;
 using Blazor.Core.Widgets;
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Blazor.Client.Widgets.List
 {
@@ -11,42 +13,42 @@ namespace Blazor.Client.Widgets.List
     {
         private readonly Random randomGenerator;
         private readonly IWidgetFactory factory;
+        private readonly Stopwatch stopwatch;
 
         public ListWidgetMediator(IWidgetFactory factory)
         {
             this.factory = factory;
             randomGenerator = new Random();
+            stopwatch = new Stopwatch();
         }
 
         protected override void OnInitialise()
         {
-            InteractionPipe.Register<Messages.Click>((m) => { BuildContainers(); });
-            InteractionPipe.Register<Message<int>>(OnContainersReady);
+            InteractionPipe.Register<Messages.Click>((m) => { BuildItems(); });
         }
 
         protected override void InitialRender()
         {
-            BuildContainers();
+            BuildItems();
         }
 
-        private void OnContainersReady(Message<int> message)
+        private async Task BuildItems()
         {
-            BuildWidgets(message.Content);
-        }
-
-        private void BuildContainers()
-        {
-            int count = randomGenerator.Next(5, 16);
-            Component.CreateItems(count);
+            int count = Component.UseLargeList ? 1420 : randomGenerator.Next(5, 16);
+            await Component.CreateContainersAsync(count);
+            await Task.Delay(7);
+            BuildWidgets(count);
         }
 
         private void BuildWidgets(int count)
         {
+            stopwatch.Start();
+
             for (int i = 0; i < count; i++)
             {
                 string containerKey = $"ITEM_CONTAINER_{i}";
 
-                if (randomGenerator.NextDouble() <= 0.66)
+                if (randomGenerator.NextDouble() <= 0.62)
                 {
                     BuildTextWidget(containerKey, $"Item number {i:00}");
                 }
@@ -55,6 +57,9 @@ namespace Blazor.Client.Widgets.List
                     BuildRandomUpdatorWidget(containerKey);
                 }
             }
+
+            stopwatch.Stop();
+            Component.SetRenderTime(stopwatch.Elapsed);
         }
 
         private void BuildTextWidget(string containerKey, string text)

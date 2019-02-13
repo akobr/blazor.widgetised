@@ -10,14 +10,7 @@
 
 @functions
 {
-    [Parameter]
-    protected int Count { get; set; }
-
-    public void SetCount(int count)
-    {
-        Count = count;
-        StateHasChanged();
-    }
+    public int Count { get; set; }
 
     void OnButtonUp()
     {

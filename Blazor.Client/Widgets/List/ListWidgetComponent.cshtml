@@ -11,16 +11,29 @@
     }
 </ul>
 
-<button class="btn btn-primary" onclick="@OnRefreshClick">Reload</button>
+<p>To render entire list of <strong>@ItemsCount takes @RenderTime</strong></p>
+<button class="btn btn-primary" style="margin: 15px;" onclick="@OnRefreshClick">Reload</button>
+<label><input type="checkbox" id="largeData" name="largeData" bind="@UseLargeList" /> Render large set of widgets <i>(1420)</i></label><br />
 
 @functions
 {
-    [Parameter]
-    protected int ItemsCount { get; set; }
+    private TaskCompletionSource<int> task;
 
-    public void CreateItems(int itemsCount)
+    public bool UseLargeList { get; set; }
+    protected int ItemsCount { get; set; }
+    protected TimeSpan RenderTime { get; set; }
+
+    public Task CreateContainersAsync(int itemsCount)
     {
+        task = new TaskCompletionSource<int>();
         ItemsCount = itemsCount;
+        StateHasChanged();
+        return task.Task;
+    }
+
+    public void SetRenderTime(TimeSpan renderTime)
+    {
+        RenderTime = renderTime;
         StateHasChanged();
     }
 
@@ -31,6 +44,13 @@
 
     protected override void OnAfterRender()
     {
-        InteractionPipe.Send<Message<int>>(new Message<int>("ItemsAreReady", ItemsCount));
+        if (task == null)
+        {
+            return;
+        }
+
+        var taskToFinish = task;
+        task = null;
+        taskToFinish.TrySetResult(ItemsCount);
     }
 }
