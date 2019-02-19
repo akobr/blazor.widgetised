@@ -1,4 +1,4 @@
-﻿using Blazor.Core.Widgets;
+﻿using Blazor.Widgetised.Mediators;
 using System;
 using System.Threading.Tasks;
 

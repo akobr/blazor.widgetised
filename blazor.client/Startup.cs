@@ -1,5 +1,6 @@
-using Blazor.Core.Widgets;
-using Blazor.Core.Messaging;
+using Blazor.Widgetised;
+using Blazor.Widgetised.Messaging;
+using Blazor.Widgetised.Presenters;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

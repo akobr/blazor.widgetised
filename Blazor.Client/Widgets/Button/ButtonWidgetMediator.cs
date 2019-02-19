@@ -1,6 +1,6 @@
-﻿using Blazor.Core;
-using Blazor.Core.Messaging;
-using Blazor.Core.Widgets;
+﻿using Blazor.Widgetised;
+using Blazor.Widgetised.Mediators;
+using Blazor.Widgetised.Messaging;
 
 namespace Blazor.Client.Widgets.Button
 {

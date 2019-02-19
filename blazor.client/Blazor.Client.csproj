@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\blazor.core\Blazor.Core.csproj" />
+    <ProjectReference Include="..\Blazor.Widgetised\Blazor.Widgetised.csproj" />
   </ItemGroup>
 
 </Project>

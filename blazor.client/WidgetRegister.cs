@@ -4,8 +4,7 @@ using Blazor.Client.Widgets.Counter;
 using Blazor.Client.Widgets.Layout;
 using Blazor.Client.Widgets.RandomUpdator;
 using Blazor.Client.Widgets.Text;
-using Blazor.Core;
-using Blazor.Core.Widgets;
+using Blazor.Widgetised;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

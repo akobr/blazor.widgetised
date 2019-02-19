@@ -1,5 +1,5 @@
-﻿using Blazor.Core;
-using Blazor.Core.Widgets;
+﻿using Blazor.Widgetised;
+using Blazor.Widgetised.Mediators;
 
 namespace Blazor.Client.Widgets.Counter
 {

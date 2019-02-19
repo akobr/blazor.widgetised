@@ -1,4 +1,4 @@
-﻿using Blazor.Core.Widgets;
+﻿using Blazor.Widgetised.Presenters;
 
 namespace Blazor.Client.Widgets.Counter
 {

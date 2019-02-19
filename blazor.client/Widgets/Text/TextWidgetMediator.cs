@@ -1,4 +1,4 @@
-﻿using Blazor.Core.Widgets;
+﻿using Blazor.Widgetised.Mediators;
 
 namespace Blazor.Client.Widgets.Text
 {
