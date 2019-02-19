@@ -6,7 +6,7 @@ using System;
 
 namespace Blazor.Core.Widgets
 {
-    public abstract class WidgetMediator : IWidgetBuildContract, IInitialisable, IActivatable<string>, IActivatable<Action<RenderFragment>>, IDisposable
+    public abstract class WidgetMediator : IActivatable<string>, IActivatable<Action<RenderFragment>>, IWidgetMediatorBuildContract, IDisposable
     {
         private readonly InteractionPipe interactionPipe;
         private IWidgetPresenter presenter;
@@ -24,11 +24,6 @@ namespace Blazor.Core.Widgets
 
         protected IMessageBus MessageBus { get; private set; }
 
-        public void Initialise()
-        {
-            OnInitialise();
-        }
-
         public void Activate(string containerKey)
         {
             if (IsActive)
@@ -38,7 +33,7 @@ namespace Blazor.Core.Widgets
 
             IsActive = true;
             ConsoleLogger.Debug($"DEBUG: A widget '{GetType().Name}' is activating in container '{containerKey}'.");
-            presenter?.ActivateInContainer(new PresenterActivateInContainerContext
+            presenter?.Activate(new PresenterInContainerActivationContext
             {
                 ContainerKey = containerKey,
                 InteractionPipe = interactionPipe,
@@ -58,8 +53,8 @@ namespace Blazor.Core.Widgets
             }
 
             IsActive = true;
-            ConsoleLogger.Debug($"DEBUG: A widget '{this.GetType().Name}' is inlining.");
-            presenter?.ActivateInline(new PresenterActivateInlineContext
+            ConsoleLogger.Debug($"DEBUG: A widget '{GetType().Name}' is inlining.");
+            presenter?.Activate(new PresenterInlineActivationContext
             {
                 RenderAction = context,
                 InteractionPipe = interactionPipe,
@@ -107,11 +102,6 @@ namespace Blazor.Core.Widgets
             return (TPresenter)presenter;
         }
 
-        protected virtual void OnInitialise()
-        {
-            // no operation ( template method )
-        }
-
         protected virtual void OnActivate()
         {
             // no operation ( template method )
@@ -132,23 +122,23 @@ namespace Blazor.Core.Widgets
             // no operation ( template method )
         }
 
-        void IWidgetBuildContract.SetPresenter(IWidgetPresenter newPresenter)
+        void IWidgetMediatorBuildContract.SetPresenter(IWidgetPresenter newPresenter)
         {
             presenter?.Deactivate();
             presenter = newPresenter;
         }
         
-        void IWidgetBuildContract.SetState(object newState)
+        void IWidgetMediatorBuildContract.SetState(object newState)
         {
             state = newState;
         }
 
-        void IWidgetBuildContract.SetCustomisation(object newCustomisation)
+        void IWidgetMediatorBuildContract.SetCustomisation(object newCustomisation)
         {
             customisation = newCustomisation;
         }
 
-        void IWidgetBuildContract.SetMessageBus(IMessageBus bus)
+        void IWidgetMediatorBuildContract.SetMessageBus(IMessageBus bus)
         {
             MessageBus = bus;
         }

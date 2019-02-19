@@ -1,0 +1,67 @@
+﻿@addTagHelper *, Blazor.Core
+@using Blazor.Core.Components
+@inherits SystemComponent
+
+<div class="layout">
+    <div class="column-left">
+        <Container Key="LEFT">
+            <p><mark>Left</mark> side container.</p>
+        </Container>
+    </div>
+    <div class="main">
+        <div class="control">
+            <select bind="@TargetContainer">
+                <option value="LEFT">left</option>
+                <option value="MAIN" selected>main</option>
+                <option value="BOTTOM_FIRST">bottom-left</option>
+                <option value="BOTTOM_SECOND">bottom-center</option>
+                <option value="BOTTOM_THIRD">bottom-right</option>
+            </select>
+            <select bind="@TargetWidgetVariant">
+                <option value="delete" selected>--DELETE--</option>
+                <option value="@WidgetVariants.TEXT_FIRST">Text widget</option>
+                <option value="@WidgetVariants.RANDOM_UPDATOR">Random updator widget</option>
+                <option value="@WidgetVariants.COUNTER">Counter widget</option>
+            </select>
+            <button title="Process" onclick="@ProcessOperation" />
+        </div>
+        <div class="content">
+            <Container Key="MAIN">
+                <p>The <strong>MAIN</strong> container.</p>
+            </Container>
+        </div>
+    </div>
+    <div class="row-bottom">
+        <div class="column-first">
+            <Container Key="BOTTOM_FIRST">
+                <p>Bottom <i>left</i> container.</p>
+            </Container>
+        </div>
+        <div class="column-second">
+            <Container Key="BOTTOM_SECOND">
+                <p>Bottom <i>center</i> container.</p>
+            </Container>
+        </div>
+        <div class="column-third">
+            <Container Key="BOTTOM_THIRD">
+                <p>Bottom <i>right</i> container.</p>
+            </Container>
+        </div>
+    </div>
+</div>
+
+@functions
+{
+    private string TargetContainer { get; set; }
+
+    private string TargetWidgetVariant { get; set; }
+
+    void ProcessOperation()
+    {
+        InteractionPipe.Send<LayoutOperationMessage>(new LayoutOperationMessage
+        {
+            TargetContainer = TargetContainer,
+            TargetWidgetVariant = TargetWidgetVariant
+        });
+    }
+}

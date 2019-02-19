@@ -1,6 +1,11 @@
 ﻿@page "/list"
 @using Blazor.Client.Widgets
 
-<h1>List of widgets which is widget, as well</h1>
+<h1>List of widgets</h1>
 
-<Widget Variant="@WidgetVariants.LIST" />
+<ul>
+    @for (int i = 0; i < 42; i++)
+    {
+        <li><Widget Variant="@WidgetVariants.RANDOM_UPDATOR" /></li>
+    }
+</ul>

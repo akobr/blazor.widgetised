@@ -1,13 +1,14 @@
-﻿using Blazor.Core.Messaging;
+﻿using Blazor.Core;
+using Blazor.Core.Messaging;
 using Blazor.Core.Widgets;
 
 namespace Blazor.Client.Widgets.Button
 {
-    public class ButtonWidgetMediator : WidgetMediator<ButtonWidgetPresenter>
+    public class ButtonWidgetMediator : WidgetMediator<ButtonWidgetPresenter>, IInitialisable
     {
         private ButtonWidgetCustomisation customisation;
 
-        protected override void OnInitialise()
+        public void Initialise()
         {
             customisation = GetCustomisation<ButtonWidgetCustomisation>();
             InteractionPipe.Register<Messages.Click>(HandleButtonClick);

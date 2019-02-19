@@ -4,18 +4,18 @@ namespace Blazor.Core.Widgets
 {
     public abstract class WidgetMessage : ISystemMessage
     {
-        public string WidgetKey { get; set; }
+        public string VariantName { get; set; }
+
+        public string Position { get; set; }
 
         public class Build : WidgetMessage
         {
-            public string VariantName { get; set; }
-
             public WidgetVariant Variant { get; set; }
         }
 
         public class Activate : WidgetMessage
         {
-            public string ContainerKey { get; set; }
+            // no member ( message type )
         }
 
         public class Deactivate : WidgetMessage

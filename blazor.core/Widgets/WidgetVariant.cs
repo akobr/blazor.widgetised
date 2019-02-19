@@ -10,6 +10,18 @@ namespace Blazor.Core.Widgets
 
         public Type StateType { get; set; }
 
-        public object Customisation { get; set; }
+        public virtual object Customisation { get; set; }
+    }
+
+    public class WidgetVariant<TCustomisation> : WidgetVariant
+        where TCustomisation : new()
+    {
+        public WidgetVariant()
+        {
+            Customisation = new TCustomisation();
+        }
+
+        public new TCustomisation Customisation { get; set; }
     }
 }
+

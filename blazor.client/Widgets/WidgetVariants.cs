@@ -6,6 +6,6 @@
         public const string TEXT_FIRST = "Text.First";
         public const string COUNTER = "Counter";
         public const string RANDOM_UPDATOR = "RandomUpdator";
-        public const string LIST = "List";
+        public const string LAYOUT = "Layout";
     }
 }

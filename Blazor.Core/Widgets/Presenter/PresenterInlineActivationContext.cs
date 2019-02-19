@@ -4,7 +4,7 @@ using System;
 
 namespace Blazor.Core.Widgets
 {
-    public class PresenterActivateInlineContext
+    public class PresenterInlineActivationContext : IPresenterInlineActivationContext
     {
         public IInteractionPipe InteractionPipe { get; set; }
 

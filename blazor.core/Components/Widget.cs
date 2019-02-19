@@ -8,13 +8,39 @@ namespace Blazor.Core.Components
     public class Widget : ComponentBase, IDisposable
     {
         private object activeWidget;
-        private string previousVariant;
+        private string previousVariantKey;
+        private WidgetDescription previousDescription;
+        private WidgetDescription description;
+        private bool parametersHasBeenSet;
 
         [Inject]
         protected IWidgetFactory Factory { get; set; }
 
         [Parameter]
         protected string Variant { get; set; }
+
+        public WidgetDescription Description
+        {
+            get { return description; }
+            set
+            {
+                if (ReferenceEquals(description, value))
+                {
+                    return;
+                }
+
+                description = value;
+
+                if (!parametersHasBeenSet || !TryCreateByVariantModel())
+                {
+                    return;
+                }
+
+                StateHasChanged();
+            }
+        }
+
+        public string PositionKey { get; set; }
 
         public void Dispose()
         {
@@ -24,14 +50,44 @@ namespace Blazor.Core.Components
 
         protected override void OnParametersSet()
         {
-            if (string.Equals(previousVariant, Variant, StringComparison.OrdinalIgnoreCase))
+            parametersHasBeenSet = true;
+
+            if (description != null)
+            {
+                TryCreateByVariantModel();
+                return;
+            }
+
+            CreateByVariantKey();
+        }
+
+        private bool TryCreateByVariantModel()
+        {
+            if (ReferenceEquals(previousDescription, description))
+            {
+                return false;
+            }
+
+            previousDescription = description;
+            DestroyWidget(activeWidget);
+            activeWidget = Factory.Build(description);
+            return true;
+        }
+
+        private void CreateByVariantKey()
+        {
+            if (string.Equals(previousVariantKey, Variant, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            previousVariant = Variant;
+            previousVariantKey = Variant;
             DestroyWidget(activeWidget);
-            activeWidget = Factory.Build(Variant);
+            activeWidget = Factory.Build(new WidgetDescription
+            {
+                VariantKey = Variant,
+                Position = PositionKey
+            });
         }
 
         private void DestroyWidget(object widget)
@@ -53,7 +109,7 @@ namespace Blazor.Core.Components
         {
             base.BuildRenderTree(builder);
             
-            if (string.IsNullOrWhiteSpace(previousVariant))
+            if (string.IsNullOrWhiteSpace(previousVariantKey))
             {
                 WriteError(builder, "No variant has been specified.");
             }

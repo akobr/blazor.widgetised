@@ -4,6 +4,6 @@
     {
         void Register(string variantKey, WidgetVariant variant);
 
-        object Build(WidgetVariant variant);
+        object Build(WidgetDescription description);
     }
 }

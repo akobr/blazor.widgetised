@@ -2,7 +2,7 @@
 
 namespace Blazor.Core.Widgets
 {
-    public interface IWidgetBuildContract
+    public interface IWidgetMediatorBuildContract
     {
         void SetPresenter(IWidgetPresenter presenter);
 

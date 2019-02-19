@@ -1,10 +1,11 @@
-﻿using Blazor.Core.Widgets;
+﻿using Blazor.Core;
+using Blazor.Core.Widgets;
 
 namespace Blazor.Client.Widgets.Counter
 {
-    public class CounterWidgetMediator : WidgetMediator<ICounterWidgetPresenter, CounterWidgetState>
+    public class CounterWidgetMediator : WidgetMediator<ICounterWidgetPresenter, CounterWidgetState>, IInitialisable
     {
-        protected override void OnInitialise()
+        public void Initialise()
         {
             // Set interactions
             InteractionPipe.Register<CounterMessage.Increment>((m) => { State.Count++; RenderCount(); });

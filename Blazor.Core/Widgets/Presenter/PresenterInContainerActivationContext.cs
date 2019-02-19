@@ -3,7 +3,7 @@ using System;
 
 namespace Blazor.Core.Widgets
 {
-    public class PresenterActivateInContainerContext
+    public class PresenterInContainerActivationContext : IPresenterInContainerActivationContext
     {
         public IInteractionPipe InteractionPipe { get; set; }
 
