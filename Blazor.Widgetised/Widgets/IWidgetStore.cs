@@ -4,12 +4,18 @@ namespace Blazor.Widgetised
 {
     public interface IWidgetStore
     {
-        void Add(Guid key, object widgetMediator);
-
-        object Get(Guid key);
-
         Guid GetNewGuid();
 
-        void Remove(Guid key);
+        Guid GetGuid(string key);
+
+        void Add(Guid id, string key, object widgetMediator);
+
+        object Get(Guid id);
+
+        object Get(string key);
+
+        void Remove(Guid id);
+
+        void Remove(string key);
     }
 }

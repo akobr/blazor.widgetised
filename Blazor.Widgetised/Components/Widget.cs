@@ -20,7 +20,7 @@ namespace Blazor.Widgetised.Components
 
         public WidgetDescription Description
         {
-            get { return description; }
+            get => description;
             set
             {
                 if (ReferenceEquals(description, value))
@@ -84,7 +84,7 @@ namespace Blazor.Widgetised.Components
             DestroyWidget(activeWidget);
             activeWidget = Factory.Build(new WidgetDescription
             {
-                VariantKey = Variant,
+                VariantName = Variant,
                 Position = PositionKey
             });
         }

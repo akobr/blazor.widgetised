@@ -13,6 +13,7 @@ namespace Blazor.Client
             services.AddSingleton<IMessageBus, MessageBus>();
             services.AddSingleton<IWidgetContainerManagement, WidgetContainerManagement>();
             services.AddSingleton<IWidgetFactory, WidgetFactory>();
+            services.AddSingleton<IWidgetStateStore, WidgetStateStore>();
 
             services.RegisterWidgets();
         }

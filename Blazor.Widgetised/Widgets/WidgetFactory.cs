@@ -14,10 +14,11 @@ namespace Blazor.Widgetised
         private readonly IWidgetStateStore stateStore;
         private readonly IDictionary<string, WidgetVariant> map;
 
-        public WidgetFactory(IServiceProvider provider, IWidgetStateStore stateStore)
+        public WidgetFactory(IWidgetStateStore stateStore, IServiceProvider provider)
         {
-            this.provider = provider;
             this.stateStore = stateStore;
+            this.provider = provider;
+
             map = new Dictionary<string, WidgetVariant>();
         }
 
@@ -28,16 +29,16 @@ namespace Blazor.Widgetised
 
         public object Build(string variantKey)
         {
-            return Build(new WidgetDescription { VariantKey = variantKey });
+            return Build(new WidgetDescription { VariantName = variantKey });
         }
 
         public object Build(WidgetDescription description)
         {
-            if (string.IsNullOrEmpty(description.VariantKey))
+            if (string.IsNullOrEmpty(description.VariantName))
             {
-                if (!map.TryGetValue(description.VariantKey, out WidgetVariant variant))
+                if (!map.TryGetValue(description.VariantName, out WidgetVariant variant))
                 {
-                    ConsoleLogger.Debug($"WARNING: No widget variant for the key '{description.VariantKey}'.");
+                    ConsoleLogger.Debug($"WARNING: No widget variant for the key '{description.VariantName}'.");
                 }
 
                 description.Variant = variant;
@@ -50,13 +51,13 @@ namespace Blazor.Widgetised
         {
             if (description.Variant == null)
             {
-                return null;
+                return Guid.Empty;
             }
 
             Type mediatorType = description.Variant.MediatorType;
             object mediator = provider.GetService(mediatorType);
 
-            TryFillMediatorContract(description);
+            TryFillMediatorContract(mediator, description);
             TryInitialise(mediator);
 
             if (mediator == null)
@@ -67,9 +68,9 @@ namespace Blazor.Widgetised
             return mediator;
         }
 
-        private void TryFillMediatorContract(WidgetDescription description)
+        private void TryFillMediatorContract(object mediator, WidgetDescription description)
         {
-            if (!(description.Variant.MediatorType is IWidgetMediatorBuildContract contract))
+            if (!(mediator is IWidgetMediatorBuildContract contract))
             {
                 return;
             }
@@ -83,7 +84,7 @@ namespace Blazor.Widgetised
             }
 
             if (!TryGetPresenter(description.Variant.PresenterType, out IWidgetPresenter presenter)
-                && description.Variant.MediatorType is IWidgetPresenterProvider presenterProvider)
+                && mediator is IWidgetPresenterProvider presenterProvider)
             {
                 // TODO: solve this in more elegant way
                 presenter = presenterProvider.Presenter;
@@ -118,8 +119,8 @@ namespace Blazor.Widgetised
                 return false;
             }
 
-            bool stateCanBeStored = string.IsNullOrEmpty(description.Position);
-            string stateKey = BuildStateKey(description);
+            bool stateCanBeStored = !string.IsNullOrEmpty(description.Position);
+            string stateKey = BuildWidgetKey(description); // TODO: optimise this
 
             if (stateCanBeStored
                 && (state = stateStore.Get(stateKey)) != null)
@@ -149,7 +150,7 @@ namespace Blazor.Widgetised
             return true;
         }
 
-        private void TryInitialise(object subject)
+        private static void TryInitialise(object subject)
         {
             if (!(subject is IInitialisable initialisable))
             {
@@ -159,18 +160,9 @@ namespace Blazor.Widgetised
             initialisable.Initialise();
         }
 
-        private string BuildStateKey(WidgetDescription description)
+        private static string BuildWidgetKey(IWidgetIdentifier description)
         {
-            string positionKey = description.Position ?? "ANYWHERE";
-
-            if (!string.IsNullOrEmpty(description.VariantKey))
-            {
-                return $"{description.VariantKey}|{positionKey}";
-            }
-            else
-            {
-                return $"{description.Variant.MediatorType.Name}|{positionKey}";
-            }
+            return description.GetKey();
         }
     }
 }

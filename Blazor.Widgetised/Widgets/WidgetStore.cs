@@ -5,10 +5,12 @@ namespace Blazor.Widgetised
 {
     public class WidgetStore : IWidgetStore
     {
+        private readonly IDictionary<string, Guid> keyMap;
         private readonly IDictionary<Guid, object> widgets;
 
         public WidgetStore()
         {
+            keyMap = new Dictionary<string, Guid>();
             widgets = new Dictionary<Guid, object>();
         }
 
@@ -17,25 +19,46 @@ namespace Blazor.Widgetised
             return Guid.NewGuid();
         }
 
-        public object Get(Guid key)
+        public Guid GetGuid(string key)
         {
-            widgets.TryGetValue(key, out object widgetMediator);
+            keyMap.TryGetValue(key, out Guid guid);
+            return guid;
+        }
+
+        public object Get(Guid id)
+        {
+            widgets.TryGetValue(id, out object widgetMediator);
             return widgetMediator;
         }
 
-        public void Add(Guid key, object widgetMediator)
+        public object Get(string key)
         {
-            if (widgetMediator == null)
+            return Get(GetGuid(key));
+        }
+
+        public void Add(Guid id, string key, object widgetMediator)
+        {
+            if (widgetMediator == null || id == Guid.Empty)
             {
                 return;
             }
 
-            widgets[key] = widgetMediator;
+            if (!string.IsNullOrEmpty(key))
+            {
+                keyMap[key] = id;
+            }
+
+            widgets[id] = widgetMediator;
         }
 
-        public void Remove(Guid key)
+        public void Remove(Guid id)
         {
-            widgets.Remove(key);
+            widgets.Remove(id);
+        }
+
+        public void Remove(string key)
+        {
+            Remove(GetGuid(key));
         }
     }
 }
