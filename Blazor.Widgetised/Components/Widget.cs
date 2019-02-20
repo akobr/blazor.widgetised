@@ -30,7 +30,7 @@ namespace Blazor.Widgetised.Components
 
                 description = value;
 
-                if (!parametersHasBeenSet || !TryCreateByVariantModel())
+                if (!parametersHasBeenSet || !TryCreateByDescriptionModel())
                 {
                     return;
                 }
@@ -53,14 +53,14 @@ namespace Blazor.Widgetised.Components
 
             if (description != null)
             {
-                TryCreateByVariantModel();
+                TryCreateByDescriptionModel();
                 return;
             }
 
             CreateByVariantKey();
         }
 
-        private bool TryCreateByVariantModel()
+        private bool TryCreateByDescriptionModel()
         {
             if (ReferenceEquals(previousDescription, description))
             {

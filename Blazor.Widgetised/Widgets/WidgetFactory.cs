@@ -34,7 +34,8 @@ namespace Blazor.Widgetised
 
         public object Build(WidgetDescription description)
         {
-            if (string.IsNullOrEmpty(description.VariantName))
+            if (description.Variant == null
+                || !string.IsNullOrEmpty(description.VariantName))
             {
                 if (!map.TryGetValue(description.VariantName, out WidgetVariant variant))
                 {
@@ -51,7 +52,7 @@ namespace Blazor.Widgetised
         {
             if (description.Variant == null)
             {
-                return Guid.Empty;
+                return null;
             }
 
             Type mediatorType = description.Variant.MediatorType;
