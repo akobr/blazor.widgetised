@@ -32,9 +32,9 @@ namespace Blazor.Widgetised.Components
             StateHasChanged();
         }
 
-        public void SetContent(RenderFragment content)
+        public void SetContent(RenderFragment newContent)
         {
-            this.content = content;
+            content = newContent;
             StateHasChanged();
         }
 

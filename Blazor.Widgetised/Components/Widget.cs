@@ -39,7 +39,7 @@ namespace Blazor.Widgetised.Components
             }
         }
 
-        public string PositionKey { get; set; }
+        public string Position { get; set; }
 
         public void Dispose()
         {
@@ -85,7 +85,7 @@ namespace Blazor.Widgetised.Components
             activeWidget = Factory.Build(new WidgetDescription
             {
                 VariantName = Variant,
-                Position = PositionKey
+                Position = Position
             });
         }
 
