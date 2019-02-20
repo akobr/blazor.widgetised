@@ -21,7 +21,7 @@ A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynam
 <div style="margin: 5px 0px;">
     <Container Key="@DELAYED_CONTAINER">
         <div style="background-color: LightSalmon;">
-            This content will be <strong>filled in @seconds seconds</strong> with <i>RandomUpdator</i> widget.
+            This content will be <strong>filled in @seconds seconds</strong> with <i>RandomUpdater</i> widget.
         </div>
     </Container>
 </div>
@@ -53,10 +53,10 @@ A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynam
         #pragma warning disable 4014
         CountDownAsync();
         #pragma warning restore 4014
-        return ExampleOfManualyCreatedWidget();
+        return ExampleOfManuallyCreatedWidget();
     }
 
-    async Task ExampleOfManualyCreatedWidget()
+    async Task ExampleOfManuallyCreatedWidget()
     {
         await Task.Delay(5000);
 
@@ -66,7 +66,7 @@ A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynam
         }
 
         // Manual activation of widget
-        object mediator = factory.Build(WidgetVariants.RANDOM_UPDATOR);
+        object mediator = factory.Build(WidgetVariants.RANDOM_UPDATER);
         IActivatable<string> activatable = (IActivatable<string>)mediator;
         activatable.Activate(DELAYED_CONTAINER);
     }

@@ -8,7 +8,7 @@ namespace Blazor.Widgetised.Mediators
     {
         private readonly WidgetPresenter<TComponent> autoPresenter;
 
-        public BlazorWidgetMediator()
+        protected BlazorWidgetMediator()
         {
             autoPresenter = new WidgetPresenter<TComponent>();
         }

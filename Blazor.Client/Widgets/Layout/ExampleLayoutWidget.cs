@@ -21,6 +21,7 @@ namespace Blazor.Client.Widgets.Layout
                 });
             }
 
+            // TODO: make this simple and create WidgetMessage.Start message
             MessageBus.Send(new WidgetMessage.Build
             {
                 VariantName = message.TargetWidgetVariant,

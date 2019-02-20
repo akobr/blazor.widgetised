@@ -7,7 +7,7 @@ namespace Blazor.Widgetised.Mediators
     {
         void SetPresenter(IWidgetPresenter presenter);
 
-        void SetCustomisation(object constomisation);
+        void SetCustomisation(object customisation);
 
         void SetState(object state);
 

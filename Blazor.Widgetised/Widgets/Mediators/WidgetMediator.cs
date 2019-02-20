@@ -14,7 +14,7 @@ namespace Blazor.Widgetised.Mediators
         private object state;
         private object customisation;
 
-        public WidgetMediator()
+        protected WidgetMediator()
         {
             interactionPipe = new InteractionPipe(null);
         }

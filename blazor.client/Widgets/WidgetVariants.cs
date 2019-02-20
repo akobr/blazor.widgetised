@@ -5,7 +5,7 @@
         public const string SHOW_WIDGET = "Button.ShowWidget";
         public const string TEXT_FIRST = "Text.First";
         public const string COUNTER = "Counter";
-        public const string RANDOM_UPDATOR = "RandomUpdator";
+        public const string RANDOM_UPDATER = "RandomUpdater";
         public const string LAYOUT = "Layout";
     }
 }

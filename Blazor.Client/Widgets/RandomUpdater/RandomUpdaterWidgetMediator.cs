@@ -1,10 +1,10 @@
-﻿using Blazor.Widgetised.Mediators;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Blazor.Widgetised.Mediators;
 
-namespace Blazor.Client.Widgets.RandomUpdator
+namespace Blazor.Client.Widgets.RandomUpdater
 {
-    public class RandomUpdatorWidgetMediator : BlazorWidgetMediator<RandomUpdatorComponent>
+    public class RandomUpdaterWidgetMediator : BlazorWidgetMediator<RandomUpdatorComponent>
     {
         private readonly Random randomGenerator = new Random();
 

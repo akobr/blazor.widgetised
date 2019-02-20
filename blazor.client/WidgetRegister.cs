@@ -2,7 +2,7 @@
 using Blazor.Client.Widgets.Button;
 using Blazor.Client.Widgets.Counter;
 using Blazor.Client.Widgets.Layout;
-using Blazor.Client.Widgets.RandomUpdator;
+using Blazor.Client.Widgets.RandomUpdater;
 using Blazor.Client.Widgets.Text;
 using Blazor.Widgetised;
 using Microsoft.AspNetCore.Components.Builder;
@@ -19,7 +19,7 @@ namespace Blazor.Client
 
             services.AddTransient<TextWidgetMediator>();
 
-            services.AddTransient<RandomUpdatorWidgetMediator>();
+            services.AddTransient<RandomUpdaterWidgetMediator>();
 
             services.AddTransient<CounterWidgetMediator>();
             services.AddTransient<CounterWidgetPresenter>();
@@ -53,9 +53,9 @@ namespace Blazor.Client
                 Customisation = new TextWidgetCustomisation { Text = "This text has been activated from runtime!" }
             });
 
-            widgetFactory.Register(WidgetVariants.RANDOM_UPDATOR, new WidgetVariant
+            widgetFactory.Register(WidgetVariants.RANDOM_UPDATER, new WidgetVariant
             {
-                MediatorType = typeof(RandomUpdatorWidgetMediator)
+                MediatorType = typeof(RandomUpdaterWidgetMediator)
             });
 
             widgetFactory.Register(WidgetVariants.COUNTER, new WidgetVariant
