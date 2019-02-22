@@ -11,18 +11,14 @@ A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynam
 <Widget Variant="@WidgetVariants.SHOW_WIDGET" /> 
 
 <h3>Widget containers</h3>
-<div style="margin: 5px 0px;">
+<div class="index-container">
     <Container Key="FIRST_WIDGET_CONTAINER">
-        <div style="background-color: LightSalmon;">
-            <i>Click on the button above to show a text widget here.</i>
-        </div>
+        <i>Click on the button above to show a text widget here.</i>
     </Container>
 </div>
-<div style="margin: 5px 0px;">
+<div class="index-container">
     <Container Key="@DELAYED_CONTAINER">
-        <div style="background-color: LightSalmon;">
-            This content will be <strong>filled in @seconds seconds</strong> with <i>RandomUpdater</i> widget.
-        </div>
+        This content will be <strong>filled in @seconds seconds</strong> with <i>RandomUpdater</i> widget.
     </Container>
 </div>
 

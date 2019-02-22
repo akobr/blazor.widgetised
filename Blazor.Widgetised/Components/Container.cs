@@ -53,20 +53,26 @@ namespace Blazor.Widgetised.Components
             base.BuildRenderTree(builder);
 
             builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", "system-container");
+            bool hasContent = content != null;
 
             if (!string.IsNullOrEmpty(Key))
             {
                 builder.AddAttribute(2, "data-key", Key);
             }
 
-            if (content != null)
+            if (hasContent)
             {
+                builder.AddAttribute(1, "class", "system-container");
                 builder.AddContent(3, content);
             }
-            else if (ChildContent != null)
+            else
             {
-                builder.AddContent(3, ChildContent);
+                builder.AddAttribute(1, "class", "system-container empty");
+
+                if (ChildContent != null)
+                {
+                    builder.AddContent(3, ChildContent);
+                }
             }
 
             builder.CloseElement();

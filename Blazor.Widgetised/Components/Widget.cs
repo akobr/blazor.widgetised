@@ -16,9 +16,13 @@ namespace Blazor.Widgetised.Components
         protected IWidgetFactory Factory { get; set; }
 
         [Parameter]
-        protected string Variant { get; set; }
+        private string Variant { get; set; }
 
-        public WidgetDescription Description
+        [Parameter]
+        private string Position { get; set; }
+
+        [Parameter]
+        private WidgetDescription Description
         {
             get => description;
             set
@@ -30,16 +34,25 @@ namespace Blazor.Widgetised.Components
 
                 description = value;
 
-                if (!parametersHasBeenSet || !TryCreateByDescriptionModel())
+                if (!parametersHasBeenSet)
                 {
                     return;
                 }
 
-                StateHasChanged();
+                CreateByDescriptionModel();
             }
         }
 
-        public string Position { get; set; }
+        public void SetPosition(string newPosition)
+        {
+            Position = newPosition;
+        }
+
+        public void SetDescription(WidgetDescription newDescription)
+        {
+            Description = newDescription;
+            StateHasChanged();
+        }
 
         public void Dispose()
         {
@@ -53,24 +66,23 @@ namespace Blazor.Widgetised.Components
 
             if (description != null)
             {
-                TryCreateByDescriptionModel();
+                CreateByDescriptionModel();
                 return;
             }
 
             CreateByVariantKey();
         }
 
-        private bool TryCreateByDescriptionModel()
+        private void CreateByDescriptionModel()
         {
             if (ReferenceEquals(previousDescription, description))
             {
-                return false;
+                return;
             }
 
             previousDescription = description;
             DestroyWidget(activeWidget);
             activeWidget = Factory.Build(description);
-            return true;
         }
 
         private void CreateByVariantKey()

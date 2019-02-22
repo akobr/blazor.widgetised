@@ -24,6 +24,8 @@ namespace Blazor.Client
             services.AddTransient<CounterWidgetMediator>();
             services.AddTransient<CounterWidgetPresenter>();
             services.AddTransient<CounterWidgetState>();
+
+            services.AddTransient<ExampleLayoutWidget>();
         }
 
         public static void RegisterWidgetVariants(this IComponentsApplicationBuilder appBuilder)

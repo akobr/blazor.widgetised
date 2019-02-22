@@ -67,7 +67,7 @@ namespace Blazor.Widgetised.Components
 
         private void TryFillBuildContractOfChildren()
         {
-            if (interactionPipe == null || children?.Count < 1)
+            if (interactionPipe == null || children == null)
             {
                 return;
             }
