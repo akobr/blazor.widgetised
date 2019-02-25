@@ -15,7 +15,14 @@ namespace Blazor.Client.Widgets.Counter
             MessageBus.Register<CounterMessage.Add>(this, HandleAddToCount);
 
             // Initialisation of the state
-            State.Count = 42;
+            if (State.IsRestored)
+            {
+                Presenter.SetIsRestored();         
+            }
+            else
+            {
+                State.Count = 42;
+            }
         }
 
         // Initial render when a widget is activated in a container

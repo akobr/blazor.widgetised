@@ -29,12 +29,12 @@ namespace Blazor.Widgetised
             map[variantName] = variant;
         }
 
-        public (Guid id, object mediator) Build(string variantName)
+        public WidgetInfo Build(string variantName)
         {
             return Build(new WidgetDescription { VariantName = variantName });
         }
 
-        public (Guid id, object mediator) Build(WidgetDescription description)
+        public WidgetInfo Build(WidgetDescription description)
         {
             if (description.Variant == null
                 || !string.IsNullOrEmpty(description.VariantName))
@@ -51,11 +51,10 @@ namespace Blazor.Widgetised
 
             if (mediator == null)
             {
-                return (Guid.Empty, null);
+                return null;
             }
 
-            Guid id = StoreMediator(mediator, description);
-            return (id, mediator);
+            return StoreMediator(mediator, description);
         }
 
         private object BuildMediator(WidgetDescription description)
@@ -79,12 +78,12 @@ namespace Blazor.Widgetised
             return mediator;
         }
 
-        private Guid StoreMediator(object mediator, WidgetDescription description)
+        private WidgetInfo StoreMediator(object mediator, IWidgetIdentifier description)
         {
-            string key = BuildWidgetKey(description);
+            string key = description.Key;
             Guid id = widgetStore.GetNewGuid();
             widgetStore.Add(id, key, mediator);
-            return id;
+            return new WidgetInfo(id, key, mediator);
         }
 
         private void TryFillMediatorContract(object mediator, WidgetDescription description)
@@ -139,7 +138,7 @@ namespace Blazor.Widgetised
             }
 
             bool stateCanBeStored = !string.IsNullOrEmpty(description.Position);
-            string stateKey = BuildWidgetKey(description); // TODO: optimise this
+            string stateKey = ((IWidgetIdentifier)description).Key; // TODO: optimise this
 
             if (stateCanBeStored
                 && (state = stateStore.Get(stateKey)) != null)
@@ -177,11 +176,6 @@ namespace Blazor.Widgetised
             }
 
             initialisable.Initialise();
-        }
-
-        private static string BuildWidgetKey(IWidgetIdentifier description)
-        {
-            return description.GetKey();
         }
     }
 }

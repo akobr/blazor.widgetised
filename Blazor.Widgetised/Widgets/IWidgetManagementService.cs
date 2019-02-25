@@ -4,15 +4,15 @@ namespace Blazor.Widgetised
 {
     public interface IWidgetManagementService
     {
-        (Guid id, object mediator) Build(string variantName);
+        WidgetInfo Build(string variantName);
 
-        (Guid id, object mediator) Build(WidgetVariant variant);
+        WidgetInfo Build(WidgetVariant variant);
 
-        (Guid id, object mediator) Build(WidgetDescription description);
+        WidgetInfo Build(WidgetDescription description);
 
-        (Guid id, object mediator) Start(string variantName, string containerKey);
+        WidgetInfo Start(string variantName, string containerKey);
 
-        (Guid id, object mediator) Start(WidgetDescription description);
+        WidgetInfo Start(WidgetDescription description);
 
         void Activate(Guid widgetId, string containerKey);
 

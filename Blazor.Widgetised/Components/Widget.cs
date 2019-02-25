@@ -82,7 +82,7 @@ namespace Blazor.Widgetised.Components
 
             previousDescription = description;
             DestroyWidget(activeWidget);
-            (_, activeWidget) = Factory.Build(description);
+            activeWidget = Factory.Build(description)?.Mediator;
         }
 
         private void CreateByVariantKey()
@@ -94,14 +94,38 @@ namespace Blazor.Widgetised.Components
 
             previousVariantKey = Variant;
             DestroyWidget(activeWidget);
-            (_, activeWidget) = Factory.Build(new WidgetDescription
+            activeWidget = Factory.Build(new WidgetDescription
             {
                 VariantName = Variant,
                 Position = Position
-            });
+            })?.Mediator;
         }
 
-        private void DestroyWidget(object widget)
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            base.BuildRenderTree(builder);
+            
+            if (string.IsNullOrWhiteSpace(previousVariantKey))
+            {
+                WriteError(builder, "No variant has been specified.");
+            }
+            else switch (activeWidget)
+            {
+                case null:
+                    WriteError(builder, "Specified variant has not been found.");
+                    break;
+
+                case IActivatable<Action<RenderFragment>> activation:
+                    activation.Activate((f) => builder.AddContent(0, f));
+                    break;
+
+                default:
+                    WriteError(builder, "Unknown widget without implementation of IActivatable<Action<RenderFragment>>.");
+                    break;
+            }
+        }
+
+        private static void DestroyWidget(object widget)
         {
             if (widget == null)
             {
@@ -113,28 +137,6 @@ namespace Blazor.Widgetised.Components
             if (widget is IDisposable dispose)
             {
                 dispose.Dispose();
-            }
-        }
-
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            base.BuildRenderTree(builder);
-            
-            if (string.IsNullOrWhiteSpace(previousVariantKey))
-            {
-                WriteError(builder, "No variant has been specified.");
-            }
-            else if (activeWidget == null)
-            {
-                WriteError(builder, "Specified variant has not been found.");
-            }
-            else if (activeWidget is IActivatable<Action<RenderFragment>> activation)
-            {
-                activation.Activate((f) => builder.AddContent(0, f));
-            }
-            else
-            {
-                WriteError(builder, "Unknown widget without implementation of IActivatable<Action<RenderFragment>>.");
             }
         }
 

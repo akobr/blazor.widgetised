@@ -5,12 +5,19 @@
 
 <p>Value: <strong>@Count</strong></p>
 
+@if (IsRestored)
+{
+    <p><mark>The state of the widget has been automatically restored.</mark></p>
+}
+
 <button class="btn btn-primary" onclick="@OnButtonUp">Up</button>
 <button class="btn btn-primary" onclick="@OnButtonDown">Down</button>
 
 @functions
-{
+{ 
     public int Count { get; set; }
+
+    public bool IsRestored { get; set; } 
 
     void OnButtonUp()
     {

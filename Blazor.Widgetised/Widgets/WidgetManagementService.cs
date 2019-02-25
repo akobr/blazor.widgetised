@@ -19,41 +19,41 @@ namespace Blazor.Widgetised
             RegisterWithMessageBus();
         }
 
-        public (Guid id, object mediator) Build(string variantName)
+        public WidgetInfo Build(string variantName)
         {
             return Build(new WidgetDescription {VariantName = variantName});
         }
 
-        public (Guid id, object mediator) Build(WidgetVariant variant)
+        public WidgetInfo Build(WidgetVariant variant)
         {
             return Build(new WidgetDescription {Variant = variant});
         }
 
-        public (Guid id, object mediator) Build(WidgetDescription description)
+        public WidgetInfo Build(WidgetDescription description)
         {
             return factory.Build(description);
         }
 
-        public (Guid id, object mediator) Start(string variantName, string containerKey)
+        public WidgetInfo Start(string variantName, string containerKey)
         {
             return Start(new WidgetDescription {VariantName = variantName, Position = containerKey});
         }
 
-        public (Guid id, object mediator) Start(WidgetDescription description)
+        public WidgetInfo Start(WidgetDescription description)
         {
-            (Guid id, object mediator) = Build(description);
+            WidgetInfo info = Build(description);
 
-            if (mediator == null)
+            if (info == null)
             {
-                return (Guid.Empty, null);
+                return null;
             }
 
             if (!string.IsNullOrEmpty(description.Position))
             {
-                ActivateMediator(mediator, description.Position);
+                ActivateMediator(info.Mediator, description.Position);
             }
 
-            return (id, mediator);
+            return info;
         }
 
         public void Activate(Guid widgetId, string containerKey)
@@ -74,7 +74,7 @@ namespace Blazor.Widgetised
                 return;
             }
 
-            Guid id = store.GetGuid(identifier.GetKey());
+            Guid id = store.GetGuid(identifier.Key);
             Activate(id, containerKey);
         }
 
@@ -96,7 +96,7 @@ namespace Blazor.Widgetised
                 return;
             }
 
-            Guid id = store.GetGuid(identifier.GetKey());
+            Guid id = store.GetGuid(identifier.Key);
             Deactivate(id);
         }
 
@@ -117,7 +117,7 @@ namespace Blazor.Widgetised
                 return;
             }
 
-            Guid id = store.GetGuid(identifier.GetKey());
+            Guid id = store.GetGuid(identifier.Key);
             Destroy(id);
         }
 
@@ -136,7 +136,7 @@ namespace Blazor.Widgetised
                 return;
             }
 
-            (Guid id, _) = Build(new WidgetDescription
+            WidgetInfo info = Build(new WidgetDescription
             {
                 VariantName = message.VariantName,
                 Variant = message.Variant,
@@ -144,8 +144,8 @@ namespace Blazor.Widgetised
                 Position = message.Position
             });
 
-            message.WidgetId = id;
-            message.WidgetKey = ((IWidgetIdentifier) message).GetKey();
+            message.WidgetId = info.Id;
+            message.WidgetKey = info.Key;
         }
 
         private void ProcessActivateMessage(WidgetMessage.Activate message)
@@ -166,7 +166,7 @@ namespace Blazor.Widgetised
             }
             else
             {
-                Activate(store.GetGuid(((IWidgetIdentifier)message).GetKey()), message.Position);
+                Activate(store.GetGuid(((IWidgetIdentifier)message).Key), message.Position);
             }
         }
 
@@ -187,7 +187,7 @@ namespace Blazor.Widgetised
             }
             else
             {
-                Deactivate(store.GetGuid(((IWidgetIdentifier)message).GetKey()));
+                Deactivate(store.GetGuid(((IWidgetIdentifier)message).Key));
             }
         }
 
@@ -208,7 +208,7 @@ namespace Blazor.Widgetised
             }
             else
             {
-                Destroy(store.GetGuid(((IWidgetIdentifier)message).GetKey()));
+                Destroy(store.GetGuid(((IWidgetIdentifier)message).Key));
             }
         }
 

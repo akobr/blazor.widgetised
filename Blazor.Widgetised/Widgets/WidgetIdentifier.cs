@@ -17,18 +17,30 @@
         public string Name
         {
             get => name;
-            set => name = string.IsNullOrEmpty(value) ? UNKNOWN_NAME : value;
+            set => name = ProcessName(value);
         }
 
         public string Position
         {
             get => position;
-            set => position = string.IsNullOrEmpty(value) ? UNKNOWN_POSITION : value;
+            set => position = ProcessPosition(value);
         }
 
-        public string GetKey()
+        public string Key => $"{Name}|{Position}";
+
+        public static string BuildKey(string name, string position)
         {
-            return $"{Name}|{Position}";
+            return $"{ProcessName(name)}|{ProcessPosition(position)}";
+        }
+
+        private static string ProcessName(string name)
+        {
+            return string.IsNullOrEmpty(name) ? UNKNOWN_NAME : name;
+        }
+
+        private static string ProcessPosition(string position)
+        {
+            return string.IsNullOrEmpty(position) ? UNKNOWN_POSITION : position;
         }
     }
 }

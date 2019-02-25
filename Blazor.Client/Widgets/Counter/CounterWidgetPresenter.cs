@@ -8,5 +8,10 @@ namespace Blazor.Client.Widgets.Counter
         {
             Component.Count = count;
         }
+
+        public void SetIsRestored()
+        {
+            Component.IsRestored = true;
+        }
     }
 }

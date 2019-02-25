@@ -11,16 +11,9 @@ namespace Blazor.Widgetised
 
         public string WidgetKey { get; set; }
 
+        string IWidgetIdentifier.Key => WidgetKey;
+
         public Guid WidgetId { get; set; }
-
-        string IWidgetIdentifier.Name => VariantName;
-
-        string IWidgetIdentifier.Position => Position;
-
-        string IWidgetIdentifier.GetKey()
-        {
-            return new WidgetIdentifier(VariantName, Position).GetKey();
-        }
 
         public class Build : WidgetMessage
         {

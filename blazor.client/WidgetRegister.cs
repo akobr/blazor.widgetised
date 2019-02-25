@@ -42,8 +42,8 @@ namespace Blazor.Client
                     Title = "Activate text widget in first container!",
                     ClickStrategy = () =>
                     {
-                        (_, object mediator) = widgetFactory.Build(WidgetVariants.TEXT_FIRST);
-                        IActivatable<string> activatable = (IActivatable<string>)mediator;
+                        WidgetInfo info = widgetFactory.Build(WidgetVariants.TEXT_FIRST);
+                        IActivatable<string> activatable = (IActivatable<string>)info.Mediator;
                         activatable.Activate("FIRST_WIDGET_CONTAINER");
                     }
                 }

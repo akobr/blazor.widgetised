@@ -10,14 +10,7 @@
 
         public object Customisation { get; set; }
 
-        string IWidgetIdentifier.Name => new WidgetIdentifier(VariantName, Position).Name;
-
-        string IWidgetIdentifier.Position => new WidgetIdentifier(VariantName, Position).Position;
-
-        string IWidgetIdentifier.GetKey()
-        {
-            return new WidgetIdentifier(VariantName, Position).GetKey();
-        }
+        string IWidgetIdentifier.Key => WidgetIdentifier.BuildKey(VariantName, Position);
     }
 
     public class WidgetDescription<TCustomisation> : WidgetDescription

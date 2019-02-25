@@ -3,5 +3,7 @@
     public interface ICounterWidgetPresenter
     {
         void SetCount(int count);
+
+        void SetIsRestored();
     }
 }
