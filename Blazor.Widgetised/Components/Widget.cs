@@ -82,7 +82,7 @@ namespace Blazor.Widgetised.Components
 
             previousDescription = description;
             DestroyWidget(activeWidget);
-            activeWidget = Factory.Build(description);
+            (_, activeWidget) = Factory.Build(description);
         }
 
         private void CreateByVariantKey()
@@ -94,7 +94,7 @@ namespace Blazor.Widgetised.Components
 
             previousVariantKey = Variant;
             DestroyWidget(activeWidget);
-            activeWidget = Factory.Build(new WidgetDescription
+            (_, activeWidget) = Factory.Build(new WidgetDescription
             {
                 VariantName = Variant,
                 Position = Position

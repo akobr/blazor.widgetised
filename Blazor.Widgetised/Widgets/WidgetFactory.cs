@@ -29,9 +29,9 @@ namespace Blazor.Widgetised
             map[variantName] = variant;
         }
 
-        public object Build(string variantKey)
+        public (Guid id, object mediator) Build(string variantName)
         {
-            return Build(new WidgetDescription { VariantName = variantKey });
+            return Build(new WidgetDescription { VariantName = variantName });
         }
 
         public (Guid id, object mediator) Build(WidgetDescription description)

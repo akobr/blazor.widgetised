@@ -62,7 +62,7 @@ A widget can be created <strong>in-line</strong> as a part of Blazor UI or dynam
         }
 
         // Manual activation of widget
-        object mediator = factory.Build(WidgetVariants.RANDOM_UPDATER);
+        (_, object mediator) = factory.Build(WidgetVariants.RANDOM_UPDATER);
         IActivatable<string> activatable = (IActivatable<string>)mediator;
         activatable.Activate(DELAYED_CONTAINER);
     }
