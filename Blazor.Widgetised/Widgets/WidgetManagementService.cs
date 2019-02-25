@@ -1,4 +1,5 @@
 ﻿using System;
+using Blazor.Widgetised.Logging;
 using Blazor.Widgetised.Mediators;
 using Blazor.Widgetised.Messaging;
 
@@ -107,6 +108,8 @@ namespace Blazor.Widgetised
                 return;
             }
 
+            WidgetMediator mediator = store.Get(widgetId) as WidgetMediator;
+            mediator?.Dispose();
             store.Remove(widgetId);
         }
 
@@ -127,6 +130,7 @@ namespace Blazor.Widgetised
             messageBus.Register<WidgetMessage.Activate>(this, ProcessActivateMessage);
             messageBus.Register<WidgetMessage.Deactivate>(this, ProcessDeactivateMessage);
             messageBus.Register<WidgetMessage.Destroy>(this, ProcessDestroyMessage);
+            messageBus.Register<WidgetMessage.Start>(this, ProcessStartMessage);
         }
 
         private void ProcessBuildMessage(WidgetMessage.Build message)
@@ -144,6 +148,35 @@ namespace Blazor.Widgetised
                 Position = message.Position
             });
 
+            if (info == null)
+            {
+                return;
+            }
+
+            message.WidgetId = info.Id;
+            message.WidgetKey = info.Key;
+        }
+
+        private void ProcessStartMessage(WidgetMessage.Start message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            WidgetInfo info = Start(new WidgetDescription
+            {
+                VariantName = message.VariantName,
+                Variant = message.Variant,
+                Customisation = message.Customisation,
+                Position = message.Position
+            });
+
+            if (info == null)
+            {
+                return;
+            }
+
             message.WidgetId = info.Id;
             message.WidgetKey = info.Key;
         }
@@ -160,7 +193,7 @@ namespace Blazor.Widgetised
             {
                 Activate(message.WidgetId, message.Position);
             }
-            else if (string.IsNullOrEmpty(message.WidgetKey))
+            else if (!string.IsNullOrEmpty(message.WidgetKey))
             {
                 Activate(store.GetGuid(message.WidgetKey), message.Position);
             }
@@ -179,14 +212,18 @@ namespace Blazor.Widgetised
 
             if (message.WidgetId != Guid.Empty)
             {
+                ConsoleLogger.Debug($"Deactivating widget: {message.WidgetId}.");
                 Deactivate(message.WidgetId);
             }
-            else if (string.IsNullOrEmpty(message.WidgetKey))
+            else if (!string.IsNullOrEmpty(message.WidgetKey))
             {
+                ConsoleLogger.Debug($"Deactivating widget: {message.WidgetKey}.");
                 Deactivate(store.GetGuid(message.WidgetKey));
             }
             else
             {
+                string key = ((IWidgetIdentifier)message).Key;
+                ConsoleLogger.Debug($"Deactivating widget: {key}.");
                 Deactivate(store.GetGuid(((IWidgetIdentifier)message).Key));
             }
         }
@@ -200,15 +237,19 @@ namespace Blazor.Widgetised
 
             if (message.WidgetId != Guid.Empty)
             {
+                ConsoleLogger.Debug($"Destroying widget: {message.WidgetId}.");
                 Destroy(message.WidgetId);
             }
-            else if (string.IsNullOrEmpty(message.WidgetKey))
+            else if (!string.IsNullOrEmpty(message.WidgetKey))
             {
+                ConsoleLogger.Debug($"Destroying widget: {message.WidgetKey}.");
                 Destroy(store.GetGuid(message.WidgetKey));
             }
             else
             {
-                Destroy(store.GetGuid(((IWidgetIdentifier)message).Key));
+                string key = ((IWidgetIdentifier)message).Key;
+                ConsoleLogger.Debug($"Destroying widget: {key}.");
+                Destroy(store.GetGuid(key));
             }
         }
 

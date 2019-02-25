@@ -6,5 +6,10 @@
         {
             // no member
         }
+
+        public class Rendered : Message
+        {
+            // no member
+        }
     }
 }

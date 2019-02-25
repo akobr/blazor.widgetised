@@ -11,7 +11,7 @@ namespace Blazor.Widgetised
 
         public string WidgetKey { get; set; }
 
-        string IWidgetIdentifier.Key => WidgetKey;
+        string IWidgetIdentifier.Key => WidgetIdentifier.BuildKey(VariantName, Position);
 
         public Guid WidgetId { get; set; }
 
@@ -31,6 +31,11 @@ namespace Blazor.Widgetised
             }
 
             public new TCustomisation Customisation { get; set; }
+        }
+
+        public class Start : Build
+        {
+            // no member ( message type )
         }
 
         public class Activate : WidgetMessage

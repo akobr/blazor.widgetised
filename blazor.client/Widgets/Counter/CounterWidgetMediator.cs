@@ -5,6 +5,8 @@ namespace Blazor.Client.Widgets.Counter
 {
     public class CounterWidgetMediator : WidgetMediator<ICounterWidgetPresenter, CounterWidgetState>, IInitialisable
     {
+        private bool isStateRestored;
+
         public void Initialise()
         {
             // Set interactions
@@ -15,19 +17,22 @@ namespace Blazor.Client.Widgets.Counter
             MessageBus.Register<CounterMessage.Add>(this, HandleAddToCount);
 
             // Initialisation of the state
-            if (State.IsRestored)
-            {
-                Presenter.SetIsRestored();         
-            }
-            else
+            isStateRestored = State.IsRestored;
+            if(!isStateRestored)
             {
                 State.Count = 42;
+                State.IsRestored = true;
             }
         }
 
         // Initial render when a widget is activated in a container
         protected override void InitialRender()
         {
+            if (isStateRestored)
+            {
+                Presenter.SetIsRestored();
+            }
+
             RenderCount();
         }
 

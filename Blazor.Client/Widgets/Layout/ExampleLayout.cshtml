@@ -1,62 +1,73 @@
 ﻿@addTagHelper *, Blazor.Widgetised
 @using Blazor.Widgetised.Components
+@using Blazor.Widgetised.Messaging
 @inherits SystemComponent
 
+<p>Specify which <strong>widget</strong>'s going to be created in which <strong>container</strong>, states are preserved:</p>
+
+<div class="control">
+    <select id="select-widget" bind="@TargetWidgetVariant">
+        <option value="delete">- delete -</option>
+        <option value="@WidgetVariants.TEXT_FIRST" selected>text widget</option>
+        <option value="@WidgetVariants.RANDOM_UPDATER">updater widget</option>
+        <option value="@WidgetVariants.COUNTER">counter widget</option>
+    </select>
+    <select id="select-container" bind="@TargetContainer">
+        <option value="LEFT">left</option>
+        <option value="MAIN" selected>main</option>
+        <option value="BOTTOM_FIRST">bottom left</option>
+        <option value="BOTTOM_SECOND">bottom center</option>
+        <option value="BOTTOM_THIRD">bottom right</option>
+    </select>
+    <button onclick="@ProcessOperation">Process</button>
+</div>
+
+
 <div class="layout">
-    <div class="row-main">
-        <div class="display-area column-left">
-            <Container Key="LEFT">
-                <p><mark>Left</mark> side container.</p>
+
+    <div class="display-area column-left">
+        <Container Key="LEFT">
+            <p><mark>Left</mark> side container.</p>
+        </Container>
+    </div>
+
+    <div class="column-right">
+
+        <div class="display-area row-first">
+            <Container Key="MAIN">
+                <p>The <strong>main</strong> container.</p>
             </Container>
         </div>
-        <div class="column-main">
-            <div class="control">
-                <select id="select-container" bind="@TargetContainer">
-                    <option value="LEFT">left</option>
-                    <option value="MAIN" selected>main</option>
-                    <option value="BOTTOM_FIRST">bottom left</option>
-                    <option value="BOTTOM_SECOND">bottom center</option>
-                    <option value="BOTTOM_THIRD">bottom right</option>
-                </select>
-                <select id="select-widget" bind="@TargetWidgetVariant">
-                    <option value="delete">- delete -</option>
-                    <option value="@WidgetVariants.TEXT_FIRST" selected>text widget</option>
-                    <option value="@WidgetVariants.RANDOM_UPDATER">updater widget</option>
-                    <option value="@WidgetVariants.COUNTER">counter widget</option>
-                </select>
-                <button onclick="@ProcessOperation">Process</button>
+
+        <div class="row-second">
+            <div class="display-area column-first">
+                <Container Key="BOTTOM_FIRST">
+                    <p>Bottom <i>left</i> container.</p>
+                </Container>
             </div>
-            <div class="display-area content">
-                <Container Key="MAIN">
-                    <p>The <strong>main</strong> container.</p>
+            <div class="display-area column-second">
+                <Container Key="BOTTOM_SECOND">
+                    <p>Bottom <i>center</i> container.</p>
+                </Container>
+            </div>
+            <div class="display-area column-third">
+                <Container Key="BOTTOM_THIRD">
+                    <p>Bottom <i>right</i> container.</p>
                 </Container>
             </div>
         </div>
-    </div> 
-    <div class="row-bottom">
-        <div class="display-area column-first">
-            <Container Key="BOTTOM_FIRST">
-                <p>Bottom <i>left</i> container.</p>
-            </Container>
-        </div>
-        <div class="display-area column-second">
-            <Container Key="BOTTOM_SECOND">
-                <p>Bottom <i>center</i> container.</p>
-            </Container>
-        </div>
-        <div class="display-area column-third">
-            <Container Key="BOTTOM_THIRD">
-                <p>Bottom <i>right</i> container.</p>
-            </Container>
-        </div>
+
     </div>
+
 </div>
 
 @functions
 {
-    private string TargetContainer { get; set; }
+    private bool nextRender;
 
-    private string TargetWidgetVariant { get; set; }
+    private string TargetContainer { get; set; } = "MAIN";
+
+    private string TargetWidgetVariant { get; set; } = WidgetVariants.TEXT_FIRST;
 
     void ProcessOperation()
     {
@@ -65,5 +76,16 @@
             TargetContainer = TargetContainer,
             TargetWidgetVariant = TargetWidgetVariant
         });
+    }
+
+    protected override Task OnAfterRenderAsync()
+    {
+        if (nextRender)
+        {
+            return Task.FromResult(0);
+        }
+
+        nextRender = true;
+        return Task.Run(() => InteractionPipe.Send<Messages.Rendered>(new Messages.Rendered()));
     }
 }

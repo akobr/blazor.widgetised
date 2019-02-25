@@ -37,7 +37,7 @@ namespace Blazor.Widgetised
         public WidgetInfo Build(WidgetDescription description)
         {
             if (description.Variant == null
-                || !string.IsNullOrEmpty(description.VariantName))
+                && !string.IsNullOrEmpty(description.VariantName))
             {
                 if (!map.TryGetValue(description.VariantName, out WidgetVariant variant))
                 {
@@ -83,6 +83,7 @@ namespace Blazor.Widgetised
             string key = description.Key;
             Guid id = widgetStore.GetNewGuid();
             widgetStore.Add(id, key, mediator);
+            ConsoleLogger.Debug($"DEBUG: Widget {id}[{key}] created.");
             return new WidgetInfo(id, key, mediator);
         }
 

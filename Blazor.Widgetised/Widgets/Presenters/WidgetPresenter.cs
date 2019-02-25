@@ -65,11 +65,17 @@ namespace Blazor.Widgetised.Presenters
                     TComponent component = (TComponent)componentRef;
                     Component = component;
                     TryFillContract(component);
+                    OnComponentSet();
                     continueWith?.Invoke();
 
                 });
                 builder.CloseComponent();
             };
+        }
+
+        protected virtual void OnComponentSet()
+        {
+            // no opertion ( template method )
         }
 
         private void TryFillContract(TComponent component)

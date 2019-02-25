@@ -138,18 +138,22 @@ h3 {
     padding: 3px;
 }
 
-.layout {
+.control {
     display: flex;
-    flex-flow: column;
+    flex-direction: row;
+    margin-bottom: 20px;
 }
 
-.layout .row-main {
+.control > * {
+    margin: 0 5px;
+}
+
+.layout {
     display: flex;
-    width: 100%;
     flex-flow: row;
 }
 
-.layout .row-bottom {
+.layout .row-second {
     display: flex;
     width: 100%;
     flex-flow: row;
@@ -160,29 +164,20 @@ h3 {
     padding: 5px;
 }
 
-.layout .row-main .column-left {
+.layout .column-left {
     flex: 1 0;
     background: gold;
 }
 
-.layout .row-main .column-main {
+.layout .column-right {
     flex: 2 0;
 }
 
-.layout .row-main .column-main .control {
-    display: flex;
-    flex-direction: row;
-}
-
-.layout .row-main .column-main .control > * {
-    margin: 0 5px;
-}
-
-.layout .row-main .column-main .content {
+.layout .column-right .row-first {
     background: deepskyblue;
 }
 
-.layout .row-bottom > * {
+.layout .row-second > * {
     flex: 1 auto;
     background: lightgreen;
 }

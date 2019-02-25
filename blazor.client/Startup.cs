@@ -24,6 +24,9 @@ namespace Blazor.Client
         {
             app.AddComponent<App>("app");
             app.RegisterWidgetVariants();
+
+            // Instanciate WidgetManagementService
+            app.Services.GetRequiredService<IWidgetManagementService>();
         }
     }
 }

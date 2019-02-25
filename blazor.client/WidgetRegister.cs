@@ -26,6 +26,7 @@ namespace Blazor.Client
             services.AddTransient<CounterWidgetState>();
 
             services.AddTransient<ExampleLayoutWidget>();
+            services.AddTransient<LayoutState>();
         }
 
         public static void RegisterWidgetVariants(this IComponentsApplicationBuilder appBuilder)
@@ -69,7 +70,8 @@ namespace Blazor.Client
 
             widgetFactory.Register(WidgetVariants.LAYOUT, new WidgetVariant
             {
-                MediatorType = typeof(ExampleLayoutWidget)
+                MediatorType = typeof(ExampleLayoutWidget),
+                StateType = typeof(LayoutState)
             });
         }
     }

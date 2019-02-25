@@ -21,6 +21,11 @@ namespace Blazor.Widgetised
 
         public Guid GetGuid(string key)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                return Guid.Empty;
+            }
+
             keyMap.TryGetValue(key, out Guid guid);
             return guid;
         }
