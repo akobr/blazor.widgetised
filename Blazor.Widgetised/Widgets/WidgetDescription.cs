@@ -19,4 +19,15 @@
             return new WidgetIdentifier(VariantName, Position).GetKey();
         }
     }
+
+    public class WidgetDescription<TCustomisation> : WidgetDescription
+        where TCustomisation : new()
+    {
+        public WidgetDescription()
+        {
+            Customisation = new TCustomisation();
+        }
+
+        public new TCustomisation Customisation { get; set; }
+    }
 }

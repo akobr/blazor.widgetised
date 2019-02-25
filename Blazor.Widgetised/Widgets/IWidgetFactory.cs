@@ -1,9 +1,11 @@
-﻿namespace Blazor.Widgetised
+﻿using System;
+
+namespace Blazor.Widgetised
 {
     public interface IWidgetFactory : IFactory<object, string>
     {
-        void Register(string variantKey, WidgetVariant variant);
+        void Register(string variantName, WidgetVariant variant);
 
-        object Build(WidgetDescription description);
+        (Guid id, object mediator) Build(WidgetDescription description);
     }
 }

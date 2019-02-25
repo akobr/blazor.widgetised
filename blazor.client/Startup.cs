@@ -14,6 +14,7 @@ namespace Blazor.Client
             services.AddSingleton<IWidgetContainerManagement, WidgetContainerManagement>();
             services.AddSingleton<IWidgetFactory, WidgetFactory>();
             services.AddSingleton<IWidgetStateStore, WidgetStateStore>();
+            services.AddSingleton<IWidgetManagementService, WidgetManagementService>();
 
             services.RegisterWidgets();
         }

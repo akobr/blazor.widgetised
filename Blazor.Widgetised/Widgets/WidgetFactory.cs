@@ -11,20 +11,22 @@ namespace Blazor.Widgetised
     public class WidgetFactory : IWidgetFactory
     {
         private readonly IServiceProvider provider;
+        private readonly IWidgetStore widgetStore;
         private readonly IWidgetStateStore stateStore;
         private readonly IDictionary<string, WidgetVariant> map;
 
-        public WidgetFactory(IWidgetStateStore stateStore, IServiceProvider provider)
+        public WidgetFactory(IWidgetStore widgetStore, IWidgetStateStore stateStore, IServiceProvider provider)
         {
+            this.widgetStore = widgetStore;
             this.stateStore = stateStore;
             this.provider = provider;
 
             map = new Dictionary<string, WidgetVariant>();
         }
 
-        public void Register(string variantKey, WidgetVariant variant)
+        public void Register(string variantName, WidgetVariant variant)
         {
-            map[variantKey] = variant;
+            map[variantName] = variant;
         }
 
         public object Build(string variantKey)
@@ -32,7 +34,7 @@ namespace Blazor.Widgetised
             return Build(new WidgetDescription { VariantName = variantKey });
         }
 
-        public object Build(WidgetDescription description)
+        public (Guid id, object mediator) Build(WidgetDescription description)
         {
             if (description.Variant == null
                 || !string.IsNullOrEmpty(description.VariantName))
@@ -45,7 +47,15 @@ namespace Blazor.Widgetised
                 description.Variant = variant;
             }
 
-            return BuildMediator(description);
+            object mediator = BuildMediator(description);
+
+            if (mediator == null)
+            {
+                return (Guid.Empty, null);
+            }
+
+            Guid id = StoreMediator(mediator, description);
+            return (id, mediator);
         }
 
         private object BuildMediator(WidgetDescription description)
@@ -67,6 +77,14 @@ namespace Blazor.Widgetised
             }
 
             return mediator;
+        }
+
+        private Guid StoreMediator(object mediator, WidgetDescription description)
+        {
+            string key = BuildWidgetKey(description);
+            Guid id = widgetStore.GetNewGuid();
+            widgetStore.Add(id, key, mediator);
+            return id;
         }
 
         private void TryFillMediatorContract(object mediator, WidgetDescription description)
