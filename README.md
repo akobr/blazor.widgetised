@@ -6,17 +6,17 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 
 > Preview alfa release is coming soon.
 
-![Library preview][doc/preview.gif]
+![Library preview][https://github.com/akobr/blazor.pureMVC/blob/master/doc/preview.gif]
 
 ## Road map
 
-[ ] Create architecture overview diagram
-[ ] Better logging (more trace logs)
-[ ] Release alfa version
-[ ] Unit tests
-[ ] Write decent documentation
-[ ] Create more complex example application
-[ ] Implement generic layout widget
+- [ ] Create architecture overview diagram
+- [ ] Better logging (more trace logs)
+- [ ] Release alfa version
+- [ ] Unit tests
+- [ ] Write decent documentation
+- [ ] Create more complex example application
+- [ ] Implement generic layout widget
 
 ## Architecture
 
