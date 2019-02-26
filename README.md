@@ -6,7 +6,7 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 
 > Preview alfa release is coming soon.
 
-![Library preview][https://github.com/akobr/blazor.pureMVC/blob/master/doc/preview.gif]
+![Library preview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/preview.gif)
 
 ## Road map
 
