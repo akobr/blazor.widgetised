@@ -1,0 +1,31 @@
+﻿@using Blazor.Widgetised.Components
+@inherits SystemComponent
+
+<h1>Counter <sub>(as widget)</sub></h1>
+
+<p>Value: <strong>@Count</strong></p>
+
+@if (IsRestored)
+{
+    <p><mark>The state of the widget has been automatically restored.</mark></p>
+}
+
+<button class="btn btn-primary" onclick="@OnButtonUp">Up</button>
+<button class="btn btn-primary" onclick="@OnButtonDown">Down</button>
+
+@functions
+{ 
+    public int Count { get; set; }
+
+    public bool IsRestored { get; set; } 
+
+    void OnButtonUp()
+    {
+        InteractionPipe.Send(new CounterMessage.Increment());
+    }
+
+    void OnButtonDown()
+    {
+        InteractionPipe.Send(new CounterMessage.Decrement());
+    }
+}
