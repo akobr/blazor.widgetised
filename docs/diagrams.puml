@@ -1,0 +1,157 @@
+@startuml architecture
+
+interface IMessage {
+    Represent a message.
+    ..
+    <i>Helps to distingush from other</i>
+    <i>types for clean architecture.</i>
+}
+
+interface IMessageBus {
+    Send<TMessage>(TMessage)
+    Register<TMessage>(object, Action<TMessage>)
+    Unregister<TMessage>(object)
+    UnregisterAll(object)
+}
+
+interface IInteractionPipe {
+    Send<TMessage>(TMessage)
+    Register<TMessage>(Action<TMessage>)
+}
+
+interface IWidgetFactory {
+    Register(string, WidgetVariant)
+    Build(WidgetDescription) : WidgetInfo
+}
+
+interface IWidgetIdentifier {
+    Key : string
+}
+
+class WidgetVariant<TCustomisation> {
+    MediatorType : Type
+    PresenterType : Type
+    StateType : Type
+    Customisation : TCustomisation
+}
+
+class WidgetDescription<TCustomisation> {
+    VariantName : string
+    Variant : WidgetVariant
+    Position : string
+    Customisation : TCustomisation
+}
+
+interface IWidgetManagementService {
+    Build(string) : WidgetInfo
+    Build(WidgetVariant) : WidgetInfo
+    Build(WidgetDescription) : WidgetInfo
+    ..
+    Start(string, string) : WidgetInfo
+    Start(WidgetDescription) : WidgetInfo
+    ..
+    Activate(Guid, string)
+    Activate(IWidgetIdentifier, string)
+    ..
+    Deactivate(Guid)
+    Deactivate(IWidgetIdentifier)
+    ..
+    Destroy(Guid)
+    Destroy(IWidgetIdentifier)
+}
+
+interface IWidgetStateStore {
+    Add(string, object)
+    Get(string) : object
+    Remove(string)
+}
+
+interface IWidgetStore {
+    GetNewGuid() : Guid
+    GetGuid(string) : Guid
+    Add(Guid, string, object)
+    Get(Guid) : object
+    Get(string) : object
+    Remove(Guid)
+    Remove(string)
+}
+
+interface IWidgetContainerManagement {
+    Get(string) : IRenderingContainer
+    Register(string, IRenderingContainer)
+    Unregister(string)
+}
+
+@enduml
+
+@startuml messaging
+
+collections components order 1
+participant Mediator order 2
+entity MessageBus order 3
+collections services order 4
+
+== Interactions (platform) ==
+
+[-> components : send interaction
+components -> components : bubling
+components -> Mediator : receive
+
+== Messages (logic) ==
+
+Mediator -> MessageBus : send message
+MessageBus -> services : receive
+MessageBus -> Mediator : receive
+
+...another time...
+
+services -> MessageBus : send message
+MessageBus -> Mediator : receive
+
+@enduml
+
+@startuml component-widget
+
+class Widget {
+    -VariantName : string
+    -Position : string
+    -Description : WidgetDescription
+    +SetPosition(string)
+    +SetDescription(WidgetDescription)
+}
+
+@enduml
+
+@startuml component-container
+
+class Container {
+    -Key : string
+    -ChildContent : RenderFragment
+    +SetKey(string)
+    +SetContent(RenderFragment)
+}
+
+@enduml
+
+@startuml component-vm-region
+
+class ViewModelRegion {
+    -ChildContent: RenderFragment
+    -ViewModel: INotifyPropertyChanged
+    -Filter: string
+}
+
+@enduml
+
+@startuml component-system
+
+class SystemComponent<TModel> {
+    <i>Implement connection with</i>
+    <i>interaction pipeline.</i>
+    ..
+    -Model : TModel
+    +SetModel(TModel)
+    #RegisterChild(IComponent)
+}
+
+@enduml
