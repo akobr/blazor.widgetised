@@ -1,4 +1,5 @@
 ﻿using System;
+using Blazor.Widgetised.Messaging;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
 
@@ -16,7 +17,7 @@ namespace Blazor.Widgetised.Components
         protected IWidgetFactory Factory { get; set; }
 
         [Parameter]
-        private string Variant { get; set; }
+        private string VariantName { get; set; }
 
         [Parameter]
         private string Position { get; set; }
@@ -87,16 +88,16 @@ namespace Blazor.Widgetised.Components
 
         private void CreateByVariantKey()
         {
-            if (string.Equals(previousVariantKey, Variant, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(previousVariantKey, VariantName, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            previousVariantKey = Variant;
+            previousVariantKey = VariantName;
             DestroyWidget(activeWidget);
             activeWidget = Factory.Build(new WidgetDescription
             {
-                VariantName = Variant,
+                VariantName = VariantName,
                 Position = Position
             })?.Mediator;
         }
@@ -149,5 +150,26 @@ namespace Blazor.Widgetised.Components
             builder.CloseElement();
             builder.CloseElement();
         }
+
+        private IWidgetManagementService Service { get; }
+
+        public IMessageBus MessageBus { get; }
+
+        void Foo()
+        {
+            // Build a widget instance through service
+            WidgetInfo info = Service.Build("MyWidgetVariant");
+            // Activate the widget from the container
+            Service.Activate(info.Id, "MyContainer");
+
+            // Build and activate the widget in one hit as a start message
+            MessageBus.Send(new WidgetMessage.Start()
+            {
+                VariantName = "MyWidgetVariant",
+                Position = "MyContainer"
+            });
+        }
+
+
     }
 }
