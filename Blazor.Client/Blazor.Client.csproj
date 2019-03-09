@@ -4,7 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RunCommand>dotnet</RunCommand>
     <RunArguments>blazor serve</RunArguments>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
 
   <ItemGroup>
