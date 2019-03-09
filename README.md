@@ -1,10 +1,10 @@
-# Widgetised Blazor (blazor.widgetised)
+# Widgetised Blazor
 
-Library with the support of widgets for a Blazor application.
+Library with the support of **widgets** for a Blazor application.
 The main goal is to help with loose coupling inside a system.
-Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has been simplified and polish.
+Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has been simplified and evolved a little bit.
 
-> Preview alpha release is coming soon. Currently on **Blazor 0.9.0** *preview3-19154-02*. [Visual Studio 2019](https://visualstudio.microsoft.com/vs/preview/) *(Preview 4 or later)* with the ASP.NET and web development workload selected needed same like [.NET Core 3.0 Preview 3 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) (3.0.100-preview3-010431).
+> Preview alpha release is coming soon. Currently on **Blazor 0.9.0** *preview3-19154-02*. [Visual Studio 2019](https://visualstudio.microsoft.com/vs/preview/) *(Preview 4 or later)* with the ASP.NET and web development workload selected is needed same like [.NET Core 3.0 Preview 3 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) (3.0.100-preview3-010431).
 
 ![Library preview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/preview.gif)
 
@@ -31,8 +31,8 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 
 ## Messaging (loose coupling)
 
-* **platform -> logic**: bubling of interactions in component tree which ends in mediator. 
-* **logic <-> logic**: broadcast messaging bus, between services and mediators.
+* **platform -> logic**: bubbling of interactions in a component tree which ends in a mediator.
+* **logic <-> logic**: a broadcast messaging bus, between services and mediators.
 
 ![messaging](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/messaging.png)
 
@@ -46,7 +46,7 @@ The library contains a couple of predefined components.
 
 ![widget component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-widget.png)
 
-Registered widget can be placed just with `VariantName` if state should be automatically preserved a `Position` need to be specified, as well. 
+A registered widget can be placed just with `VariantName` if a state should be automatically preserved a `Position` need to be specified, as well. 
 A totally custom widget can be rendered with `Description` property.
 
 Widget registration should happen by `IWidgetFactory` interface:
@@ -63,13 +63,13 @@ Widget registration should happen by `IWidgetFactory` interface:
 }
 ```
 
-To place inline widget inside Razor component can by done by `Widget` element:
+To place an inline widget inside Razor component can be done by `Widget` element:
 
 ```cshtml
-<Widget VariantName="@WidgetVariants.SHOW_WIDGET" /> 
+<Widget VariantName="MyWidgetVariant" /> 
 ```
 
-If you planning to dynamically instantiate widget from a code-based component you can render it directly by `RenderTreeBuilder`.
+If you planning to dynamically instantiate a widget from a code-based component you can render it directly by `RenderTreeBuilder`.
 
 ```csharp
 builder.OpenComponent<Widget>(0);
@@ -91,7 +91,7 @@ builder.CloseComponent();
 
 ### Container
 
-**A place holder for dynamic content.** A content can be any `RenderFragment` but predominantly intended for widgets.
+**A place holder for dynamic content.** Content can be any `RenderFragment` but predominantly intended for widgets.
 
 ![container component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-container.png)
 
@@ -103,7 +103,7 @@ Placement of a container inside a component:
 </Container>
 ```
 
-To instanciate a widget inside the container from any place of code can be done by direct access to service `IWidgetManagementService` or by sending a message `Widget.Start` to `IMessageBus`.
+To instantiate a widget inside the container from any place of code can be done by direct access to service `IWidgetManagementService` or by sending a message `Widget.Start` to `IMessageBus`.
 
 ```csharp
 private IWidgetManagementService Service { get; }
@@ -113,7 +113,7 @@ void Foo()
 {
     // Build a widget instance through service
     WidgetInfo info = Service.Build("MyWidgetVariant");
-    // Activate the widget from the container
+    // Activate the widget into the container
     Service.Activate(info.Id, "MyContainer");
 
     // Build and activate the widget in one hit as a start message
@@ -127,12 +127,12 @@ void Foo()
 
 ### ViewModelRegion
 
-Simple region component to define a part of UI which use MVVM patern.
+Simple region component to define a part of UI which use MVVM pattern.
 
 ![mvvm region component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-vm-region.png)
 
 ### SystemComponent (abstract)
 
-Abstract **base class for custom component** with support of interaction pipeline and MVVM pattern.
+Abstract **base class for custom component** with the support of interaction pipeline and MVVM pattern.
 
 ![system base component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-system.png)
