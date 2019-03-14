@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace Blazor.Widgetised.Components
 {
@@ -35,6 +36,16 @@ namespace Blazor.Widgetised.Components
             base.OnParametersSet();
             UpdateViewModelParameter();
             UpdateFilterParameter();
+        }
+
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            base.BuildRenderTree(builder);
+
+            if (ChildContent != null)
+            {
+                builder.AddContent(0, ChildContent);
+            }
         }
 
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)

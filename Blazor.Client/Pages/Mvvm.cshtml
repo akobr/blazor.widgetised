@@ -1,13 +1,45 @@
 ﻿@page "/mvvm"
-@using Blazor.Client.Widgets
+@using Blazor.Client.Widgets.Mvvm;
+@using Blazor.Widgetised;
+
 
 <h1>MVVM architecture and widgets</h1>
 
-<p>
-    <strong>Coming soon!</strong>
-</p>
+<p>A view model can be used with <strong>ViewModelRegion</strong> or <strong>SystemComponent</strong>.</p>
 
-<p>
-    Preview and example of components <i>ViewModelRegion</i> and <i>SystemComponent</i> with a view model.
-    Implementation of simple widget, which use a view model to update UI.
-</p>
+<h2>Simple properties by region</h2>
+
+<ViewModelRegion ViewModel="@ViewModel">
+<p>Text: <i>@ViewModel.Text</i><br />
+Number: <i>@ViewModel.Number</i><br />
+Flag: <i>@ViewModel.Flag</i></p>
+</ViewModelRegion>
+
+<h2>Collection by region with filter</h2>
+
+<ViewModelRegion ViewModel="@ViewModel" Filter="Items">
+    <ul>
+        @foreach (string item in ViewModel.Items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+</ViewModelRegion>
+
+<h2>View model editor as widget</h2>
+
+<Widget Description="@CreateWidgetDescription()" />
+
+@functions
+{
+    private ViewModel ViewModel { get; } = new ViewModel();
+
+    private WidgetDescription CreateWidgetDescription()
+    {
+        return new WidgetDescription
+        {
+            Variant = new WidgetVariant(typeof(MvvmWidget)),
+            Customisation = ViewModel
+        };
+    }
+}

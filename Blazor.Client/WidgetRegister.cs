@@ -2,6 +2,7 @@
 using Blazor.Client.Widgets.Button;
 using Blazor.Client.Widgets.Counter;
 using Blazor.Client.Widgets.Layout;
+using Blazor.Client.Widgets.Mvvm;
 using Blazor.Client.Widgets.RandomUpdater;
 using Blazor.Client.Widgets.Text;
 using Blazor.Widgetised;
@@ -27,6 +28,7 @@ namespace Blazor.Client
 
             services.AddTransient<ExampleLayoutWidget>();
             services.AddTransient<LayoutState>();
+            services.AddTransient<MvvmWidget>();
         }
 
         public static void RegisterWidgetVariants(this IComponentsApplicationBuilder appBuilder)

@@ -1,0 +1,58 @@
+﻿@using Blazor.Widgetised.Components
+@using Blazor.Widgetised.Messaging
+
+@inherits SystemComponent<ViewModel>
+
+<table border="1" cellpadding="4" style="margin-bottom:25px">
+    <thead>
+        <tr>
+            <th style="min-width:120px">Property</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Text</td>
+            <td>
+                <input type="text" id="text" bind="@ViewModel.Text" />
+            </td>
+        </tr>
+        <tr>
+            <td>Number</td>
+            <td>
+                <select id="number" bind="@ViewModel.Number">
+                    <option value="42">42</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="7">7</option>
+                    <option value="100">100</option>
+                    <option value="1024">1024</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Flag</td>
+            <td>
+                <label><input type="checkbox" id="flag" bind="@ViewModel.Flag" />True</label>
+            </td>
+        </tr>
+        <tr>
+            <td>Items</td>
+            <td>
+                <button onclick="@OnButtonClick">Add item</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+@functions
+{
+    private void OnButtonClick()
+    {
+        InteractionPipe.Send<Messages.Click>(new Messages.Click
+        {
+            Name = "AddItem",
+            Content = "next item"
+        });
+    }
+}

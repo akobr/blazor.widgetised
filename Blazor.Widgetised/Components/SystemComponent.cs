@@ -10,22 +10,28 @@ namespace Blazor.Widgetised.Components
     {
         private INotifyPropertyChanged? registeredModel;
 
-        protected TModel? Model { get; private set; }
+        [Parameter]
+        protected TModel? ViewModel { get; private set; }
 
         protected override void OnParametersSet()
         {
+            if (ReferenceEquals(registeredModel, ViewModel))
+            {
+                return;
+            }
+
             base.OnParametersSet();
             UpdateModelParameter();
         }
 
         public void SetModel(TModel model)
         {
-            if (Model != null && !IsModelModified(model))
+            if (ViewModel != null && !IsModelModified(model))
             {
                 return;
             }
 
-            Model = model;
+            ViewModel = model;
             UpdateModelParameter();
             OnModelChanged();
             StateHasChanged();
@@ -43,12 +49,12 @@ namespace Blazor.Widgetised.Components
 
         private void UpdateModelParameter()
         {
-            if (ReferenceEquals(registeredModel, Model))
+            if (ReferenceEquals(registeredModel, ViewModel))
             {
                 return;
             }
 
-            if (Model is INotifyPropertyChanged notifier)
+            if (ViewModel is INotifyPropertyChanged notifier)
             {
                 registeredModel = notifier;
                 notifier.PropertyChanged += (o, e) => StateHasChanged();
