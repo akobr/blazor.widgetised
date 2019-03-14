@@ -74,7 +74,7 @@ namespace Blazor.Widgetised
 
             if (mediator == null)
             {
-                logger.Warning($"Widget {widgetId} can't be activated because doesn't exist.");
+                logger.Warning($"Widget {widgetId:B} can't be activated because doesn't exist.");
                 return;
             }
 
@@ -92,7 +92,7 @@ namespace Blazor.Widgetised
 
             if (mediator == null)
             {
-                logger.Warning($"Widget {widgetId} can't be deactivated because doesn't exist.");
+                logger.Warning($"Widget {widgetId:B} can't be deactivated because doesn't exist.");
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace Blazor.Widgetised
 
             if (mediator == null)
             {
-                logger.Warning($"Widget {widgetId} can't be destroyed because doesn't exist.");
+                logger.Warning($"Widget {widgetId:B} can't be destroyed because doesn't exist.");
                 return;
             }
 

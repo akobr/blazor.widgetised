@@ -2,7 +2,7 @@
 
 namespace Blazor.Widgetised
 {
-    public interface IWidgetMessage : ISystemMessage
+    internal interface IWidgetMessage : ISystemMessage
     {
         void ProcessMessage(IWidgetManagementService service);
     }

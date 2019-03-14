@@ -93,11 +93,8 @@ namespace Blazor.Widgetised.Messaging
         private void SendAsInterfaces<TMessage>(TMessage message, Type messageType)
             where TMessage : IMessage
         {
-            // TODO: [P1] Pick only interfaces which are implementing IMessage interface
-            // .Where(i => i.IsAssignableFrom(baseType))
             foreach (Type interfaceType in messageType.GetInterfaces().Where(i => baseType.IsAssignableFrom(i)))
             {
-                logger.Trace($"Trying interface type [{interfaceType.Name}].");
                 Send(message, interfaceType);
             }
         }
@@ -109,6 +106,8 @@ namespace Blazor.Widgetised.Messaging
             {
                 return;
             }
+
+            logger.Trace($"Message [{typeof(TMessage).Name}] is receiving by {receivers.Count} receiver(s) as [{messageType.Name}].");
 
             foreach (Delegate handlerDel in receivers.Values)
             {

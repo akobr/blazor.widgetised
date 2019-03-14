@@ -48,7 +48,7 @@ namespace Blazor.Widgetised
             Guid id = widgetStore.GetNewGuid();
 
             widgetStore.Add(id, mediator);
-            logger.Trace($"Widget {id} [{WidgetDescription.BuildKey(description).key}] has been created.");
+            logger.Trace($"Widget {id:B} [{WidgetDescription.BuildKey(description).key}] has been created.");
             return new WidgetInfo(id, mediator);
         }
 
