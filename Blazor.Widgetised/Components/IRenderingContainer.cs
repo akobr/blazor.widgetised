@@ -5,5 +5,7 @@ namespace Blazor.Widgetised.Components
     public interface IRenderingContainer
     {
         void SetContent(RenderFragment component);
+
+        void ClearContent();
     }
 }

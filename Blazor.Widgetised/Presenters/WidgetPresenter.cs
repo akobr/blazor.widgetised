@@ -10,10 +10,22 @@ namespace Blazor.Widgetised.Presenters
         where TComponent : class, IComponent
     {
         private IWidgetContainerManagement containerManagement;
-        private IInteractionPipe interactionPipe;
-        private IRenderingContainer container;
+        private IInteractionPipe? interactionPipe;
+        private IRenderingContainer? container;
 
-        public TComponent Component { get; private set; }
+        public WidgetPresenter()
+        {
+            Logger = NotAssigned.Logger;
+            containerManagement = NotAssigned.WidgetContainerManagement;
+        }
+
+        /// <summary>
+        /// Gets the root component, would be set during the activation of the widget.
+        /// Before activation is null.
+        /// </summary>
+        public TComponent? Component { get; private set; }
+
+        protected ILogger Logger { get; private set; }
 
         public void Activate(IPresenterInlineActivationContext context)
         {
@@ -38,7 +50,7 @@ namespace Blazor.Widgetised.Presenters
 
             if (container == null)
             {
-                ConsoleLogger.Debug($"WARNING: No container for key '{context.ContainerKey}' has been found.");
+                Logger.Warning($"No container for key [{context.ContainerKey}] has been found.");
             }
 
             container?.SetContent(BuildFragment(context.ContinueWith));
@@ -46,13 +58,7 @@ namespace Blazor.Widgetised.Presenters
 
         public void Deactivate()
         {
-            container?.SetContent(null);
-            container = null;
-        }
-
-        void IWidgetPresenterBuildContract.SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement)
-        {
-            containerManagement = newContainerManagement;
+            container?.ClearContent();
         }
 
         protected virtual RenderFragment BuildFragment(Action continueWith)
@@ -86,6 +92,16 @@ namespace Blazor.Widgetised.Presenters
             }
 
             contract.SetInteractionPipe(new InteractionPipe(interactionPipe));
+        }
+
+        void IWidgetPresenterBuildContract.SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement)
+        {
+            containerManagement = newContainerManagement;
+        }
+
+        void IWidgetPresenterBuildContract.SetLogger(ILogger logger)
+        {
+            Logger = logger;
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using Blazor.Widgetised.Interactions;
 using Microsoft.AspNetCore.Components;
 
-using IComponent = Microsoft.AspNetCore.Components.IComponent;
-
 namespace Blazor.Widgetised.Components
 {
     public abstract class SystemComponent<TModel> : SystemComponent
+        where TModel : class
     {
-        private INotifyPropertyChanged registeredModel;
+        private INotifyPropertyChanged? registeredModel;
 
-        protected TModel Model { get; private set; }
+        protected TModel? Model { get; private set; }
 
         protected override void OnParametersSet()
         {
@@ -60,18 +58,19 @@ namespace Blazor.Widgetised.Components
 
     public abstract class SystemComponent : ComponentBase, IComponentBuildContract, IDisposable
     {
-        private ICollection<IComponent> children;
-        private InteractionPipe interactionPipe;
+        private IInteractionPipe interactionPipe;
 
         protected IInteractionPipe InteractionPipe => interactionPipe;
+
+        public SystemComponent()
+        {
+            interactionPipe = new InteractionPipe();
+        }
 
         public void Dispose()
         {
             OnDispose();
-
-            interactionPipe?.Dispose();
-            interactionPipe = null;
-            children = null;
+            interactionPipe.Clear();
         }
 
         protected virtual void OnDispose()
@@ -79,40 +78,17 @@ namespace Blazor.Widgetised.Components
             // no operation ( template method )
         }
 
-        protected void RegisterChild(IComponent component)
+        protected void ChildReferenceCaptured(object component)
         {
-            if (children == null)
+            if(component is IComponentBuildContract childContract)
             {
-                children = new List<IComponent>();
+                childContract.SetInteractionPipe(new InteractionPipe(interactionPipe));
             }
-
-            children.Add(component);
         }
 
-        protected override void OnAfterRender()
-        {
-            TryFillBuildContractOfChildren();
-        }
-
-        void IComponentBuildContract.SetInteractionPipe(InteractionPipe newPipe)
+        void IComponentBuildContract.SetInteractionPipe(IInteractionPipe newPipe)
         {
             interactionPipe = newPipe;
-        }
-
-        private void TryFillBuildContractOfChildren()
-        {
-            if (interactionPipe == null || children == null)
-            {
-                return;
-            }
-
-            foreach (IComponent child in children)
-            {
-                if (child is IComponentBuildContract contract)
-                {
-                    contract.SetInteractionPipe(new InteractionPipe(interactionPipe));
-                }
-            }
         }
     }
 }

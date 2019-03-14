@@ -7,18 +7,18 @@ namespace Blazor.Widgetised.Components
 {
     public class ViewModelRegion : ComponentBase, IDisposable
     {
-        private INotifyPropertyChanged lastViewModel;
-        private string lastFilter;
-        private Regex regexFilter;
+        private INotifyPropertyChanged? lastViewModel;
+        private string? lastFilter;
+        private Regex? regexFilter;
 
         [Parameter]
-        private RenderFragment ChildContent { get; set; }
+        private RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        private INotifyPropertyChanged ViewModel { get; set; }
+        private INotifyPropertyChanged? ViewModel { get; set; }
 
         [Parameter]
-        private string Filter { get; set; }
+        private string? Filter { get; set; }
 
         public void Dispose()
         {
@@ -39,7 +39,8 @@ namespace Blazor.Widgetised.Components
 
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (regexFilter != null && !regexFilter.IsMatch(e.PropertyName))
+            if (regexFilter != null
+                && !regexFilter.IsMatch(e.PropertyName))
             {
                 return;
             }
@@ -60,18 +61,25 @@ namespace Blazor.Widgetised.Components
             }
 
             lastViewModel = ViewModel;
-            ViewModel.PropertyChanged += OnPropertyChanged;
+
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged += OnPropertyChanged;
+            }
         }
 
         private void UpdateFilterParameter()
         {
-            if (regexFilter != null && string.Equals(lastFilter, Filter))
+            if (regexFilter != null
+                && string.Equals(lastFilter, Filter))
             {
                 return;
             }
 
             lastFilter = Filter;
-            regexFilter = new Regex(Filter);
+            regexFilter = string.IsNullOrEmpty(Filter)
+                    ? null
+                    : new Regex(Filter);
         }
     }
 }

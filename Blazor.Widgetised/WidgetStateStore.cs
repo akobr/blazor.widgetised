@@ -12,7 +12,7 @@ namespace Blazor.Widgetised
             states = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public object Get(string stateKey)
+        public object? Get(string stateKey)
         {
             states.TryGetValue(stateKey, out object widgetMediator);
             return widgetMediator;

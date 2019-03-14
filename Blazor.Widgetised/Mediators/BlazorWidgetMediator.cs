@@ -15,14 +15,29 @@ namespace Blazor.Widgetised.Mediators
 
         IWidgetPresenter IWidgetPresenterProvider.Presenter => autoPresenter;
 
+#pragma warning disable CS8603 
+        // CS8603: Possible null reference return.
+        // Reason: Can be ignored because is part of widget concept and will be set on widget activation.
+
+        /// <summary>
+        /// Gets the razor component responsible for UI part of the widget.
+        /// Would be null before activation, firstly can be used in <see cref="WidgetMediator.OnActivate"/> method.
+        /// </summary>
         protected TComponent Component => autoPresenter.Component;
+#pragma warning restore CS8603 // Possible null reference return.
     }
 
+#pragma warning disable CS8618
+    // CS8618: Non-nullable field is uninitialized.
+    // Reason: typedState field will be filled in as part of build process in widget factory.
     public abstract class BlazorWidgetMediator<TComponent, TState> : BlazorWidgetMediator<TComponent>
         where TComponent : class, IComponent
     {
         private TState typedState;
 
+        /// <summary>
+        /// Gets the state of the widget, this would be injected during widget build process. Potentially could be null.
+        /// </summary>
         protected TState State
         {
             get

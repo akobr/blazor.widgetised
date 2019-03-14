@@ -1,4 +1,4 @@
-﻿using Blazor.Widgetised.Messaging;
+﻿using Blazor.Widgetised.Logging;
 using Blazor.Widgetised.Presenters;
 
 namespace Blazor.Widgetised.Mediators
@@ -11,6 +11,6 @@ namespace Blazor.Widgetised.Mediators
 
         void SetState(object state);
 
-        void SetMessageBus(IMessageBus bus);
+        void SetLogger(ILogger logger);
     }
 }

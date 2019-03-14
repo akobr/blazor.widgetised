@@ -4,7 +4,7 @@ namespace Blazor.Widgetised.Presenters
 {
     public interface IWidgetContainerManagement
     {
-        IRenderingContainer Get(string containerKey);
+        IRenderingContainer? Get(string containerKey);
 
         void Register(string key, IRenderingContainer container);
 

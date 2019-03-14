@@ -18,13 +18,18 @@
             Content = content;
         }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public object Content { get; set; }
+        public object? Content { get; set; }
     }
 
     public class Message<TContent> : IMessage
     {
+#pragma warning disable CS8618
+        // CS8618: Non-nullable field is uninitialized.
+        // Reason: The property Content can't be set as nullable because of error
+        //         CS8627: A nullable type parameter must be known to be a value type or non-nullable reference type.
+
         public Message()
         {
             // no operation
@@ -35,13 +40,15 @@
             Name = name;
         }
 
+#pragma warning restore CS8618
+
         public Message(string name, TContent content)
         {
             Name = name;
             Content = content;
         }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public TContent Content { get; set; }
     }

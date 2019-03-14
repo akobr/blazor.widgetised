@@ -1,5 +1,4 @@
 ﻿using System;
-using Blazor.Widgetised.Messaging;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
 
@@ -7,23 +6,28 @@ namespace Blazor.Widgetised.Components
 {
     public class Widget : ComponentBase, IDisposable
     {
-        private object activeWidget;
-        private string previousVariantKey;
-        private WidgetDescription previousDescription;
-        private WidgetDescription description;
+        private object? activeWidget;
+        private string? activeVariantName;
+        private WidgetDescription? activeDescription;
+        private WidgetDescription? description;
         private bool parametersHasBeenSet;
+
+        public Widget()
+        {
+            Factory = NotAssigned.WidgetFactory;
+        }
 
         [Inject]
         protected IWidgetFactory Factory { get; set; }
 
         [Parameter]
-        private string VariantName { get; set; }
+        private string? VariantName { get; set; }
 
         [Parameter]
-        private string Position { get; set; }
+        private string? Position { get; set; }
 
         [Parameter]
-        private WidgetDescription Description
+        private WidgetDescription? Description
         {
             get => description;
             set
@@ -76,24 +80,30 @@ namespace Blazor.Widgetised.Components
 
         private void CreateByDescriptionModel()
         {
-            if (ReferenceEquals(previousDescription, description))
+            if (ReferenceEquals(activeDescription, description))
             {
                 return;
             }
 
-            previousDescription = description;
+            activeDescription = description;
             DestroyWidget(activeWidget);
+
+            if (description == null)
+            {
+                return;
+            }
+
             activeWidget = Factory.Build(description)?.Mediator;
         }
 
         private void CreateByVariantKey()
         {
-            if (string.Equals(previousVariantKey, VariantName, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(activeVariantName, VariantName, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            previousVariantKey = VariantName;
+            activeVariantName = VariantName;
             DestroyWidget(activeWidget);
             activeWidget = Factory.Build(new WidgetDescription
             {
@@ -105,28 +115,35 @@ namespace Blazor.Widgetised.Components
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             base.BuildRenderTree(builder);
-            
-            if (string.IsNullOrWhiteSpace(previousVariantKey))
+                        
+            switch (activeWidget)
             {
-                WriteError(builder, "No variant has been specified.");
-            }
-            else switch (activeWidget)
-            {
-                case null:
-                    WriteError(builder, "Specified variant has not been found.");
-                    break;
-
                 case IActivatable<Action<RenderFragment>> activation:
                     activation.Activate((f) => builder.AddContent(0, f));
                     break;
 
+                case null:
+                    if (activeDescription != null)
+                    {
+                        WriteError(builder, "Specified widget description didn't produce a widget.");
+                    }
+                    else if (string.IsNullOrWhiteSpace(activeVariantName))
+                    {
+                        WriteError(builder, "No variant has been specified.");
+                    }
+                    else
+                    {
+                        WriteError(builder, $"Specified variant [{activeVariantName}] has not been found.");
+                    }
+                    break;
+
                 default:
-                    WriteError(builder, "Unknown widget without implementation of IActivatable<Action<RenderFragment>>.");
+                    WriteError(builder, "Unknown widget type without implementation of IActivatable<Action<RenderFragment>>.");
                     break;
             }
         }
 
-        private static void DestroyWidget(object widget)
+        private static void DestroyWidget(object? widget)
         {
             if (widget == null)
             {
@@ -150,26 +167,5 @@ namespace Blazor.Widgetised.Components
             builder.CloseElement();
             builder.CloseElement();
         }
-
-        private IWidgetManagementService Service { get; }
-
-        public IMessageBus MessageBus { get; }
-
-        void Foo()
-        {
-            // Build a widget instance through service
-            WidgetInfo info = Service.Build("MyWidgetVariant");
-            // Activate the widget from the container
-            Service.Activate(info.Id, "MyContainer");
-
-            // Build and activate the widget in one hit as a start message
-            MessageBus.Send(new WidgetMessage.Start()
-            {
-                VariantName = "MyWidgetVariant",
-                Position = "MyContainer"
-            });
-        }
-
-
     }
 }

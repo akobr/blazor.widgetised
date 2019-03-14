@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Blazor.Widgetised.Logging;
 
 namespace Blazor.Widgetised.Messaging
 {
     public class MessageBus : IMessageBus
     {
+        private readonly static Type baseType = typeof(IMessage);
+
+        private readonly ILogger logger;
         private readonly IDictionary<Type, IDictionary<object, Delegate>> mapByMessage;
         private readonly IDictionary<object, IDictionary<Type, Delegate>> mapByReceiver;
 
-        public MessageBus()
+        public MessageBus(ILogger logger)
         {
+            this.logger = logger;
             mapByMessage = new Dictionary<Type, IDictionary<object, Delegate>>();
             mapByReceiver = new Dictionary<object, IDictionary<Type, Delegate>>();
         }
@@ -48,16 +54,10 @@ namespace Blazor.Widgetised.Messaging
         public void Send<TMessage>(TMessage message)
             where TMessage : IMessage
         {
-            if (!mapByMessage.TryGetValue(typeof(TMessage), out var receivers))
-            {
-                return;
-            }
-
-            foreach (Delegate handlerDel in receivers.Values)
-            {
-                Action<TMessage> handler = (Action<TMessage>)handlerDel;
-                handler.Invoke(message);
-            }
+            Type messageType = typeof(TMessage);
+            logger.Trace($"Message [{messageType.Name}] has been sent.");
+            Send(message, messageType);
+            SendAsInterfaces(message, messageType);
         }
 
         public void Unregister<TMessage>(object receiver)
@@ -88,6 +88,33 @@ namespace Blazor.Widgetised.Messaging
             }
 
             mapByReceiver.Remove(receiver);
+        }
+
+        private void SendAsInterfaces<TMessage>(TMessage message, Type messageType)
+            where TMessage : IMessage
+        {
+            // TODO: [P1] Pick only interfaces which are implementing IMessage interface
+            // .Where(i => i.IsAssignableFrom(baseType))
+            foreach (Type interfaceType in messageType.GetInterfaces().Where(i => baseType.IsAssignableFrom(i)))
+            {
+                logger.Trace($"Trying interface type [{interfaceType.Name}].");
+                Send(message, interfaceType);
+            }
+        }
+
+        private void Send<TMessage>(TMessage message, Type messageType)
+            where TMessage : IMessage
+        {
+            if (!mapByMessage.TryGetValue(messageType, out var receivers))
+            {
+                return;
+            }
+
+            foreach (Delegate handlerDel in receivers.Values)
+            {
+                Action<TMessage> handler = (Action<TMessage>)handlerDel;
+                handler.Invoke(message);
+            }
         }
     }
 }

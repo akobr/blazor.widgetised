@@ -12,9 +12,9 @@ namespace Blazor.Widgetised.Presenters
             map = new Dictionary<string, IRenderingContainer>();
         }
 
-        public IRenderingContainer Get(string containerKey)
+        public IRenderingContainer? Get(string containerKey)
         {
-            map.TryGetValue(containerKey, out IRenderingContainer container);
+            map.TryGetValue(containerKey, out IRenderingContainer? container);
             return container;
         }
 

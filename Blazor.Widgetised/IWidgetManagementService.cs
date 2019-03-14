@@ -16,14 +16,8 @@ namespace Blazor.Widgetised
 
         void Activate(Guid widgetId, string containerKey);
 
-        void Activate(IWidgetIdentifier identifier, string containerKey);
-
         void Deactivate(Guid widgetId);
 
-        void Deactivate(IWidgetIdentifier identifier);
-
         void Destroy(Guid widgetId);
-
-        void Destroy(IWidgetIdentifier identifier);
     }
 }

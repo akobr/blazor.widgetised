@@ -7,9 +7,14 @@ namespace Blazor.Widgetised.Interactions
     public class InteractionPipe : IInteractionPipe, IDisposable
     {
         private readonly IDictionary<Type, Delegate> map;
-        private readonly IInteractionPipe parent;
+        private readonly IInteractionPipe? parent;
 
-        public InteractionPipe(IInteractionPipe parent)
+        public InteractionPipe()
+        {
+            map = new Dictionary<Type, Delegate>();
+        }
+
+        public InteractionPipe(IInteractionPipe? parent)
         {
             this.parent = parent;
             map = new Dictionary<Type, Delegate>();
@@ -36,15 +41,20 @@ namespace Blazor.Widgetised.Interactions
             map[typeof(TMessage)] = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
-        private void Bubble<TMessage>(TMessage message)
-            where TMessage : IMessage
+        public void Clear()
         {
-            parent?.Send<TMessage>(message);
+            map.Clear();
         }
 
         public void Dispose()
         {
-            map.Clear();
+            Clear();
+        }
+
+        private void Bubble<TMessage>(TMessage message)
+            where TMessage : IMessage
+        {
+            parent?.Send<TMessage>(message);
         }
     }
 }

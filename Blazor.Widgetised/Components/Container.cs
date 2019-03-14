@@ -8,17 +8,26 @@ namespace Blazor.Widgetised.Components
 {
     public class Container : ComponentBase, IRenderingContainer, IDisposable
     {
-        private RenderFragment content;
-        private string registeredKey;
+        private RenderFragment? content;
+        private string? registeredKey;
+
+        public Container()
+        {
+            Management = NotAssigned.WidgetContainerManagement;
+            Logger = NotAssigned.Logger;
+        }   
 
         [Inject]
         private IWidgetContainerManagement Management { get; set; }
 
-        [Parameter]
-        private string Key { get; set; }
+        [Inject]
+        private ILogger Logger { get; set; }
 
         [Parameter]
-        private RenderFragment ChildContent { get; set; }
+        private string? Key { get; set; }
+
+        [Parameter]
+        private RenderFragment? ChildContent { get; set; }
 
         public void SetKey(string newKey)
         {
@@ -35,6 +44,12 @@ namespace Blazor.Widgetised.Components
         public void SetContent(RenderFragment newContent)
         {
             content = newContent;
+            StateHasChanged();
+        }
+
+        public void ClearContent()
+        {
+            content = null;
             StateHasChanged();
         }
 
@@ -62,11 +77,13 @@ namespace Blazor.Widgetised.Components
 
             if (hasContent)
             {
+                Logger.Trace($"Rendering filled container [{registeredKey ?? "no-key"}]");
                 builder.AddAttribute(1, "class", "system-container");
                 builder.AddContent(3, content);
             }
             else
             {
+                Logger.Trace($"Rendering empty container [{registeredKey ?? "no-key"}]");
                 builder.AddAttribute(1, "class", "system-container empty");
 
                 if (ChildContent != null)
@@ -78,7 +95,7 @@ namespace Blazor.Widgetised.Components
             builder.CloseElement();
         }
 
-        private void RegisterKey(string key)
+        private void RegisterKey(string? key)
         {
             if (IsKeySameLastPrevious(key))
             {
@@ -92,9 +109,9 @@ namespace Blazor.Widgetised.Components
                 return;
             }
 
-            ConsoleLogger.Debug($"DEBUG: Container with key '{key}' is registering.");
             Management.Register(key, this);
             registeredKey = key;
+            Logger.Debug($"Container with key [{key}] has been registered.");
         }
 
         private void UnregisterPreviousKey()
@@ -108,7 +125,7 @@ namespace Blazor.Widgetised.Components
             registeredKey = null;
         }
 
-        private bool IsKeySameLastPrevious(string key)
+        private bool IsKeySameLastPrevious(string? key)
         {
             return string.Equals(key, registeredKey, StringComparison.OrdinalIgnoreCase);
         }

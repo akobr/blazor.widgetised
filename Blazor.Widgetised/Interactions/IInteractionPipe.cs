@@ -10,5 +10,7 @@ namespace Blazor.Widgetised.Interactions
 
         void Register<TMessage>(Action<TMessage> handler)
             where TMessage : IMessage;
+
+        void Clear();
     }
 }
