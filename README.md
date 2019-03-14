@@ -11,14 +11,14 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 ## Road map
 
 - [ ] Create architecture overview diagram
-- [ ] Better logging (more trace logs)
+- [X] Better logging (more trace logs)
 - [ ] Release alfa version
 - [ ] Unit tests
 - [ ] Write decent documentation
 - [ ] Add widget lifetime manager
 - [ ] Create more complex example application
 - [ ] Implement generic layout widget
-- [ ] Use nullable reference types (C# 8.0)
+- [X] Use nullable reference types (C# 8.0)
 - [ ] Experiment with ReactiveUI
 
 ## Architecture
