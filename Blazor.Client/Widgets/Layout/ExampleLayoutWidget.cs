@@ -1,24 +1,34 @@
-﻿using Blazor.Widgetised;
+﻿using System;
+using Blazor.Widgetised;
 using Blazor.Widgetised.Mediators;
+using Blazor.Widgetised.Messages;
 using Blazor.Widgetised.Messaging;
 
 namespace Blazor.Client.Widgets.Layout
 {
     public class ExampleLayoutWidget : BlazorWidgetMediator<ExampleLayout, LayoutState>, IInitialisable
     {
+        private readonly IMessageBus messageBus;
+
+        public ExampleLayoutWidget(IMessageBus messageBus)
+        {
+            this.messageBus = messageBus;
+        }
+
         public void Initialise()
         {
             InteractionPipe.Register<Messages.Rendered>(HandleFirstRender);
             InteractionPipe.Register<LayoutOperationMessage>(HandleOperation);
         }
 
-
         protected override void OnDestroy()
         {
             foreach (LayoutState.LayoutItem item in State.Widgets.Values)
             {
-                DestroyWidget(item.VariantName, item.ContainerKey);
+                DestroyWidget(item.WidgetId);
             }
+
+            messageBus.UnregisterAll(this);
         }
 
         // Restore last state of the layout
@@ -26,7 +36,7 @@ namespace Blazor.Client.Widgets.Layout
         {
             foreach (LayoutState.LayoutItem item in State.Widgets.Values)
             {
-                MessageBus.Send(new WidgetMessage.Start { VariantName = item.VariantName, Position = item.ContainerKey });
+                messageBus.Send(new StartWidgetMessage { VariantName = item.VariantName, Position = item.ContainerKey });
             }
         }
 
@@ -34,8 +44,11 @@ namespace Blazor.Client.Widgets.Layout
         {
             if (message.TargetWidgetVariant == "delete")
             {
-                DestroyWidget(message.TargetWidgetVariant, message.TargetContainer);
-                State.Widgets.Remove(message.TargetContainer);
+                if (State.Widgets.TryGetValue(message.TargetContainer, out var layout))
+                {
+                    DestroyWidget(layout.WidgetId);
+                    State.Widgets.Remove(message.TargetContainer);
+                }
             }
             else
             {
@@ -45,26 +58,25 @@ namespace Blazor.Client.Widgets.Layout
 
         private void CreateWidget(string widgetName, string position)
         {
-            MessageBus.Send(new WidgetMessage.Start
+            StartWidgetMessage message = new StartWidgetMessage
             {
                 VariantName = widgetName,
                 Position = position
-            });
-
-            State.Widgets[position] = new LayoutState.LayoutItem()
-            {
-                VariantName = widgetName,
-                ContainerKey = position
             };
+
+            messageBus.Send(message);
+
+            if (message.WidgetInfo == null)
+            {
+                throw new InvalidOperationException($"The widget [{widgetName}] hasn't been started.");
+            }
+
+            State.Widgets[position] = new LayoutState.LayoutItem(message.WidgetInfo.Id, widgetName, position);
         }
 
-        private void DestroyWidget(string widgetName, string position)
+        private void DestroyWidget(Guid widgetId)
         {
-            MessageBus.Send(new WidgetMessage.Destroy
-            {
-                VariantName = widgetName,
-                Position = position
-            });
+            messageBus.Send(new DestroyWidgetMessage(widgetId));
         }
     }
 }

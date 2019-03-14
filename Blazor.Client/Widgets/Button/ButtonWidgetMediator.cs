@@ -6,7 +6,7 @@ namespace Blazor.Client.Widgets.Button
 {
     public class ButtonWidgetMediator : WidgetMediator<ButtonWidgetPresenter>, IInitialisable
     {
-        private ButtonWidgetCustomisation customisation;
+        private ButtonWidgetCustomisation? customisation;
 
         public void Initialise()
         {

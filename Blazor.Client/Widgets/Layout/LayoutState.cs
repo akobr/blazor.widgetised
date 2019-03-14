@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Blazor.Widgetised;
 
 namespace Blazor.Client.Widgets.Layout
 {
@@ -15,9 +14,18 @@ namespace Blazor.Client.Widgets.Layout
 
         public class LayoutItem
         {
-            public string VariantName { get; set; }
+            public LayoutItem(Guid widgetId, string variantName, string containerKey)
+            {
+                WidgetId = widgetId;
+                VariantName = variantName;
+                ContainerKey = containerKey;
+            }
 
-            public string ContainerKey { get; set; }
+            public Guid WidgetId { get; }
+
+            public string VariantName { get; }
+
+            public string ContainerKey { get; }
         }
     }
 }

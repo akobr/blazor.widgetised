@@ -13,9 +13,6 @@ namespace Blazor.Client.Widgets.Counter
             InteractionPipe.Register<CounterMessage.Increment>((m) => { State.Count++; RenderCount(); });
             InteractionPipe.Register<CounterMessage.Decrement>((m) => { State.Count--; RenderCount(); });
 
-            // Set message
-            MessageBus.Register<CounterMessage.Add>(this, HandleAddToCount);
-
             // Initialisation of the state
             isStateRestored = State.IsRestored;
             if(!isStateRestored)
@@ -39,13 +36,6 @@ namespace Blazor.Client.Widgets.Counter
         private void RenderCount()
         {
             Presenter.SetCount(State.Count);
-        }
-
-        // A handler for CounterMessage.Add message
-        private void HandleAddToCount(CounterMessage.Add message)
-        {
-            State.Count += message.Amount;
-            RenderCount();
         }
     }
 }

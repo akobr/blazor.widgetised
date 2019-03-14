@@ -6,7 +6,7 @@ namespace Blazor.Client.Widgets.Text
     {
         protected override void InitialRender()
         {
-            Component.SetText(GetCustomisation<TextWidgetCustomisation>().Text);
+            Component.SetText(GetCustomisation<TextWidgetCustomisation>()?.Text ?? "No customisation model");
         }
     }
 }

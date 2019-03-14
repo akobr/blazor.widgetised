@@ -33,16 +33,15 @@ namespace Blazor.Client
         {
             IWidgetFactory widgetFactory = appBuilder.Services.GetService<IWidgetFactory>();
 
-            widgetFactory.Register(WidgetVariants.SHOW_WIDGET, new WidgetVariant
+            widgetFactory.Register(WidgetVariants.SHOW_WIDGET, new WidgetVariant<ButtonWidgetMediator, ButtonWidgetPresenter>
             {
-                MediatorType = typeof(ButtonWidgetMediator),
-                PresenterType = typeof(ButtonWidgetPresenter),
                 Customisation = new ButtonWidgetCustomisation
                 {
                     // Hind: Example of usage of strategy (delegate) in widget mediator
                     Title = "Activate text widget in first container!",
                     ClickStrategy = () =>
                     {
+                        // Hind: Manual widget build and activation, in most of cases would be easier to use IWidgetManagementService
                         WidgetInfo info = widgetFactory.Build(WidgetVariants.TEXT_FIRST);
                         IActivatable<string> activatable = (IActivatable<string>)info.Mediator;
                         activatable.Activate("FIRST_WIDGET_CONTAINER");
@@ -50,27 +49,16 @@ namespace Blazor.Client
                 }
             });
 
-            widgetFactory.Register(WidgetVariants.TEXT_FIRST, new WidgetVariant
-            {
-                MediatorType = typeof(TextWidgetMediator),
-                Customisation = new TextWidgetCustomisation { Text = "This text has been activated from runtime!" }
-            });
+            var textVariant = new CustomisedWidgetVariant<TextWidgetMediator, TextWidgetCustomisation>();
+            textVariant.Customisation.Text = "This text has been activated from runtime!";
+            widgetFactory.Register(WidgetVariants.TEXT_FIRST, textVariant);
 
-            widgetFactory.Register(WidgetVariants.RANDOM_UPDATER, new WidgetVariant
-            {
-                MediatorType = typeof(RandomUpdaterWidgetMediator)
-            });
+            widgetFactory.Register(WidgetVariants.RANDOM_UPDATER, new WidgetVariant<RandomUpdaterWidgetMediator>());
 
-            widgetFactory.Register(WidgetVariants.COUNTER, new WidgetVariant
-            {
-                MediatorType = typeof(CounterWidgetMediator),
-                PresenterType = typeof(CounterWidgetPresenter),
-                StateType = typeof(CounterWidgetState)
-            });
+            widgetFactory.Register(WidgetVariants.COUNTER, new WidgetVariant<CounterWidgetMediator, CounterWidgetPresenter, CounterWidgetState>());
 
-            widgetFactory.Register(WidgetVariants.LAYOUT, new WidgetVariant
+            widgetFactory.Register(WidgetVariants.LAYOUT, new WidgetVariant(typeof(ExampleLayoutWidget))
             {
-                MediatorType = typeof(ExampleLayoutWidget),
                 StateType = typeof(LayoutState)
             });
         }
