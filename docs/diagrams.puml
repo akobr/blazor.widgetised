@@ -149,8 +149,8 @@ class SystemComponent<TModel> {
     <i>Implement connection with</i>
     <i>interaction pipeline.</i>
     ..
-    -Model : TModel
-    +SetModel(TModel)
+    -ViewModel : TModel
+    +SetViewModel(TModel)
     #RegisterChild(IComponent)
 }
 
