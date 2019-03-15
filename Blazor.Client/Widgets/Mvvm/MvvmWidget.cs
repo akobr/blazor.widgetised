@@ -16,7 +16,7 @@ namespace Blazor.Client.Widgets.Mvvm
 
         protected override void OnActivate()
         {
-            Component.SetModel(model);
+            Component.SetViewModel(model);
         }
 
         private void HandleAddItem(Messages.Click message)

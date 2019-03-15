@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Widgetised.Components
 {
-    public abstract class SystemComponent<TModel> : SystemComponent
-        where TModel : class
+    public abstract class SystemComponent<TViewModel> : SystemComponent
+        where TViewModel : class
     {
         private INotifyPropertyChanged? registeredModel;
 
         [Parameter]
-        protected TModel? ViewModel { get; private set; }
+        protected TViewModel? ViewModel { get; private set; }
 
         protected override void OnParametersSet()
         {
@@ -21,10 +21,10 @@ namespace Blazor.Widgetised.Components
             }
 
             base.OnParametersSet();
-            UpdateModelParameter();
+            UpdateViewModelParameter();
         }
 
-        public void SetModel(TModel model)
+        public void SetViewModel(TViewModel model)
         {
             if (ViewModel != null && !IsModelModified(model))
             {
@@ -32,22 +32,22 @@ namespace Blazor.Widgetised.Components
             }
 
             ViewModel = model;
-            UpdateModelParameter();
-            OnModelChanged();
+            UpdateViewModelParameter();
+            OnViewModelChanged();
             StateHasChanged();
         }
 
-        protected virtual bool IsModelModified(TModel newModel)
+        protected virtual bool IsModelModified(TViewModel newModel)
         {
             return true;
         }
 
-        protected virtual void OnModelChanged()
+        protected virtual void OnViewModelChanged()
         {
             // no operation ( template method )
         }
 
-        private void UpdateModelParameter()
+        private void UpdateViewModelParameter()
         {
             if (ReferenceEquals(registeredModel, ViewModel))
             {
