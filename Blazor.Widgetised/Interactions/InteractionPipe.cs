@@ -7,16 +7,10 @@ namespace Blazor.Widgetised.Interactions
     public class InteractionPipe : IInteractionPipe, IDisposable
     {
         private readonly IDictionary<Type, Delegate> map;
-        private readonly IInteractionPipe? parent;
+        private IInteractionPipe? parent;
 
         public InteractionPipe()
         {
-            map = new Dictionary<Type, Delegate>();
-        }
-
-        public InteractionPipe(IInteractionPipe? parent)
-        {
-            this.parent = parent;
             map = new Dictionary<Type, Delegate>();
         }
 
@@ -25,7 +19,7 @@ namespace Blazor.Widgetised.Interactions
         {
             Type messageType = typeof(TMessage);
 
-            if(!map.TryGetValue(messageType, out Delegate hadlerDel))
+            if (!map.TryGetValue(messageType, out Delegate hadlerDel))
             {
                 Bubble<TMessage>(message);
                 return;
@@ -49,6 +43,11 @@ namespace Blazor.Widgetised.Interactions
         public void Dispose()
         {
             Clear();
+        }
+
+        public void SetParent(IInteractionPipe? newParent)
+        {
+            parent = newParent;
         }
 
         private void Bubble<TMessage>(TMessage message)

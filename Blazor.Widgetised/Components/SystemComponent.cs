@@ -64,7 +64,7 @@ namespace Blazor.Widgetised.Components
 
     public abstract class SystemComponent : ComponentBase, IComponentBuildContract, IDisposable
     {
-        private IInteractionPipe interactionPipe;
+        private readonly InteractionPipe interactionPipe;
 
         protected IInteractionPipe InteractionPipe => interactionPipe;
 
@@ -86,15 +86,15 @@ namespace Blazor.Widgetised.Components
 
         protected void ChildReferenceCaptured(object component)
         {
-            if(component is IComponentBuildContract childContract)
+            if (component is IComponentBuildContract childContract)
             {
-                childContract.SetInteractionPipe(new InteractionPipe(interactionPipe));
+                childContract.SetParentInteractionPipe(interactionPipe);
             }
         }
 
-        void IComponentBuildContract.SetInteractionPipe(IInteractionPipe newPipe)
+        void IComponentBuildContract.SetParentInteractionPipe(IInteractionPipe? parentPipe)
         {
-            interactionPipe = newPipe;
+            interactionPipe.SetParent(parentPipe);
         }
     }
 }

@@ -91,7 +91,7 @@ namespace Blazor.Widgetised.Presenters
                 return;
             }
 
-            contract.SetInteractionPipe(new InteractionPipe(interactionPipe));
+            contract.SetParentInteractionPipe(interactionPipe);
         }
 
         void IWidgetPresenterBuildContract.SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement)
