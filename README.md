@@ -8,29 +8,19 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 
 ![Library preview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/preview.gif)
 
-## Road map
+## Concepts
 
-### Phase 1
+* **Widget**: an independent and self-containing unit of mediator and presenter (razor components).
+* **MessageBus**: centralised message bus for widgets and services. Powerful tool to decoupled items in the system, must be used wisely.
+* **Interaction**: communication from platform (component) to logic layer (mediator).
 
-- [X] Better logging (more trace logs)
-- [X] Use nullable reference types (C# 8.0)
-- [X] Create MVVM example
-- [X] Write decent documentation
-- [ ] Create architecture overview diagram
-- [ ] Unit tests
-- [ ] Release alfa version
+### Supporting concepts
 
-### Phase 2
-
-- [ ] Add widget lifetime manager
-- [ ] Implement generic layout widget
-- [ ] Experiment with ReactiveUI
-
-## Architecture
-
-* **Widget**: integrated unit, mediator and razor component with or without view model (MVVM).
-* **MessageBus**: centralised message bus for widgets and services.
-* **Interaction**: communication (message) from platform (UI) to logic layer (mediator).
+* **state**: an automatically stored and restored state of a widget, when the same widget is placed to the same position.
+* **variant**: a predefined widget configuration; simplifies a widget creation.
+* **container**: named placeholder in UI where can be placed content, dynamically.
+* **customisation**: allows configuring a currently created widget.
+* * **store**: a piece of the application state.
 
 ![architecture overview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture.png)
 
@@ -316,3 +306,21 @@ WidgetDescription description = new WidgetDescription()
 
 // when the widget's going to be created the original customisation from the variant is merged with the dynamic changes
 ```
+
+## Road map
+
+### Phase 1
+
+- [X] Better logging (more trace logs)
+- [X] Use nullable reference types (C# 8.0)
+- [X] Create MVVM example
+- [X] Write decent documentation
+- [ ] Create architecture overview diagram
+- [ ] Unit tests
+- [ ] Release alfa version
+
+### Phase 2
+
+- [ ] Add widget lifetime manager
+- [ ] Implement generic layout widget
+- [ ] Experiment with ReactiveUI
