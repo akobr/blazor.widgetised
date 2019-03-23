@@ -20,7 +20,9 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 * **variant**: a predefined widget configuration; simplifies a widget creation.
 * **container**: named placeholder in UI where can be placed content, dynamically.
 * **customisation**: allows configuring a currently created widget.
-* * **store**: a piece of the application state.
+* **store**: a piece of the application state.
+
+## Architecture overview
 
 ![architecture overview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture.png)
 
@@ -30,6 +32,83 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 * **logic <-> logic**: a broadcast messaging bus, between services and mediators.
 
 ![messaging](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/messaging.png)
+
+### Intersections (platform)
+
+The intersections are designed to be used on the platform layer in the hierarchical structure of components, where they can bubble up in the tree and potentially be captured and handled inside the mediator.
+
+An iteraction is sent and received by `IInteractionPipe` which should be structured into a chain of pipes (a pipeline). Any component with `IInteractionPipelineContract` interface will be automatically connected to the chain when is used as a main component in a presenter. The base class `CustomComponent` contains a helper method `RegisterChild(IComponent)` to connect a child component to the pipeline.
+
+Register for an interaction:
+
+```csharp
+public class CounterWidgetMediator : WidgetMediator<ICounterWidgetPresenter>
+{
+  private int count;
+
+  public void Initialise()
+  {
+    // Register an interaction handler
+    InteractionPipe.Register<CounterMessage.Increment>(HandleIncrease);
+  }
+
+  // Handler of the interaction
+  private void HandleIncrease(IMessage message)
+  {
+    count++;
+    Presenter.SetCount(count);
+  }
+}
+```
+
+To report an interaction the same interface `IInteractionPipe` is needed.
+
+```cshtml
+@using Blazor.Widgetised.Components
+@inherits CustomComponent
+
+<!-- ... content ... -->
+
+<button class="btn btn-primary" onclick="@OnButtonClick">Up</button>
+
+@functions
+{ 
+    void OnButtonClick()
+    {
+        InteractionPipe.Send(new CounterMessage.Increment());
+    }
+}
+```
+
+### Messages (logic)
+
+On the logic layer between services and widgets can be used message bus which is designed to send broadcast messages and keep subsystem modules/widgets totally decouple to each other.
+
+Register a handler or sent a message is possible by `IMessageBus` interface. Registration can be done by `Register` method and specifying a handler method in shape `void Handler(IMessage)`.
+
+```csharp
+void RegisterHandler(IMessageBus messageBus)
+{
+  messageBus.Register<Message>(this, (message) => { /* handle the message here */ });
+}
+
+public void Dispose()
+{
+  // We should do a proper clean-up and unregister all handlers or this object won't be collected
+  messageBus.UnregisterAll(this);
+}
+```
+
+Each message needs to implement `IMessage` and then can be sended by `IMessageBus`:
+
+```csharp
+void SendMessage(IMessageBus messageBus)
+{
+  messageBus.Send(new Message("MessageName", "MessageBody"));
+}
+```
+
+> The interface `IMessage` is currently used only to force developers to build a new types as messages and keep architecture clean by avoiding to send any object as a message.
 
 ## Components
 
@@ -81,7 +160,7 @@ builder.CloseComponent();
 
 ### Container
 
-**A place holder for dynamic content.** Content can be any `RenderFragment` but predominantly intended for widgets.
+**A place holder for dynamic content.** A content can be any `RenderFragment` but predominantly intended for widgets.
 
 ![container component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-container.png)
 
@@ -97,7 +176,6 @@ To instantiate a widget inside the container from any place of code can be done 
 
 ```csharp
 private IWidgetManagementService Service { get; }
-private IMessageBus MessageBus { get; }
 
 void Foo()
 {
@@ -106,13 +184,6 @@ void Foo()
 
   // Activate the widget into the container
   Service.Activate(info.Id, "MyContainer");
-
-  // Build and activate the widget in one hit as a start message
-  MessageBus.Send(new StartWidgetMessage()
-  {
-    VariantName = "MyWidgetVariant",
-    Position = "MyContainer"
-  });
 }
 ```
 
@@ -133,11 +204,11 @@ void StartWidget()
 
 ### ViewModelRegion
 
-Simple region component to define a part of UI which use MVVM pattern.
+Simple region component to define a part of UI which used *MVVM pattern*.
 
 ![mvvm region component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-vm-region.png)
 
-Any view model which implements `INotifyPropertyChanged` can be used as a parameter for the region component:
+Any view model with the implementation of `INotifyPropertyChanged` can be used as a parameter for the region component:
 
 ```csharp
 public class MyViewModel : INotifyPropertyChanged
@@ -203,18 +274,19 @@ To specify on which properties the region is going to be updated use `Filter` pa
 </ViewModelRegion>
 ```
 
-### SystemComponent (abstract)
+### CustomComponent (abstract)
 
-Abstract **base class for custom component** with the support of interaction pipeline and MVVM pattern.
+Abstract **class for a custom component** with the support of *interaction pipeline* and *MVVM pattern*.
 
-![system base component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-system.png)
+![base class for a custom component](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/component-system.png)
 
-A system component can be used with any view model. When the model implements `INotifyPropertyChanged` will be automatically updated on any property change.
+A custom component can be used with any view model. For automatic updates an implementation of `INotifyPropertyChanged` would be needed.
 
 ```cshtml
 @using Blazor.Widgetised.Components
 @using Blazor.Widgetised.Messaging
 
+@* Custom component with the view model *@
 @inherits SystemComponent<MyViewModel>
 
 <table>
@@ -289,7 +361,7 @@ public class ExampleCustomisation : IExampleCustomisation
 }
 ```
 
-The customisation can be overwritten by specifying new instance inside `WidgetDescription` if you need to change only a specific set of properties a dynamic customisation object `Customisation<TCustomisation>` should be used.
+The customisation can be overwritten by specifying new instance inside `WidgetDescription`. When you need to change only the specific set of properties a dynamic customisation object `Customisation<TCustomisation>` or `Dictionary<string, object>` should be used.
 
 ```csharp
 dynamic customisation = new Customisation<IExampleCustomisation>();
@@ -315,7 +387,7 @@ WidgetDescription description = new WidgetDescription()
 - [X] Use nullable reference types (C# 8.0)
 - [X] Create MVVM example
 - [X] Write decent documentation
-- [ ] Create architecture overview diagram
+- [X] Create architecture overview diagram
 - [ ] Unit tests
 - [ ] Release alfa version
 

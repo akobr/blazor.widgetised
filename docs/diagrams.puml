@@ -19,15 +19,6 @@ interface IInteractionPipe {
     Register<TMessage>(Action<TMessage>)
 }
 
-interface IWidgetFactory {
-    Register(string, WidgetVariant)
-    Build(WidgetDescription) : WidgetInfo
-}
-
-interface IWidgetIdentifier {
-    Key : string
-}
-
 class WidgetVariant<TCustomisation> {
     MediatorType : Type
     PresenterType : Type
@@ -42,7 +33,7 @@ class WidgetDescription<TCustomisation> {
     Customisation : TCustomisation
 }
 
-interface IWidgetManagementService {
+interface IWidgetManagementService #GreenYellow {
     Build(string) : WidgetInfo
     Build(WidgetVariant) : WidgetInfo
     Build(WidgetDescription) : WidgetInfo
@@ -51,36 +42,60 @@ interface IWidgetManagementService {
     Start(WidgetDescription) : WidgetInfo
     ..
     Activate(Guid, string)
-    Activate(IWidgetIdentifier, string)
-    ..
     Deactivate(Guid)
-    Deactivate(IWidgetIdentifier)
-    ..
     Destroy(Guid)
-    Destroy(IWidgetIdentifier)
 }
 
-interface IWidgetStateStore {
-    Add(string, object)
-    Get(string) : object
-    Remove(string)
+class WidgetMediator #CornflowerBlue {
+    #IsActive : bool
+    #InteractionPipe : IInteractionPipe
+    #Logger : ILogger
+    +Activate(string)
+    +Activate(Action<RenderFragment>)
+    +Deactivate()
+    +Dispose()
+    #GetCustomisation<TCustomisation>() : TCustomisation
+    #GetState<TState>() : TState
+    #GetPresenter<TPresenter>() : TPresenter
 }
 
-interface IWidgetStore {
-    GetNewGuid() : Guid
-    GetGuid(string) : Guid
-    Add(Guid, string, object)
-    Get(Guid) : object
-    Get(string) : object
-    Remove(Guid)
-    Remove(string)
+interface IWidgetPresenter {
+    Activate(IPresenterInlineActivationContext)
+    Activate(IPresenterInContainerActivationContext)
+    Deactivate()
 }
 
-interface IWidgetContainerManagement {
-    Get(string) : IRenderingContainer
-    Register(string, IRenderingContainer)
-    Unregister(string)
+interface ITypedWidgetCustomisation #CornflowerBlue {
+    <i>Typed customisation for a widget.</i>
 }
+
+class WidgetState #CornflowerBlue {
+    <i>A POCO object as a state of a widget.</i>
+}
+
+class WidgetLayoutComponent #CornflowerBlue {
+    <i>A structure of Razor components.</i>
+}
+
+class Service #CornflowerBlue {
+    <i>A long-running unit of business logic.</i>
+}
+
+Service <..> IMessageBus
+
+IWidgetManagementService .. WidgetDescription
+WidgetDescription .. WidgetVariant
+WidgetVariant .. ITypedWidgetCustomisation
+
+IMessageBus <..> WidgetMediator
+IMessageBus . IMessage
+
+ITypedWidgetCustomisation <- WidgetMediator
+WidgetMediator -> WidgetState
+WidgetMediator --> IWidgetPresenter
+IWidgetPresenter -> WidgetLayoutComponent
+WidgetMediator <.. IInteractionPipe
+IInteractionPipe <.. WidgetLayoutComponent
 
 @enduml
 
@@ -101,11 +116,12 @@ components -> Mediator : receive
 
 Mediator -> MessageBus : send message
 MessageBus -> services : receive
-MessageBus -> Mediator : receive
 
 ...another time...
 
 services -> MessageBus : send message
+MessageBus -> services : receive
+MessageBus -> services : receive
 MessageBus -> Mediator : receive
 
 @enduml
@@ -145,7 +161,7 @@ class ViewModelRegion {
 
 @startuml component-system
 
-class SystemComponent<TModel> {
+class CustomComponent<TModel> {
     <i>Implement connection with</i>
     <i>interaction pipeline.</i>
     ..
