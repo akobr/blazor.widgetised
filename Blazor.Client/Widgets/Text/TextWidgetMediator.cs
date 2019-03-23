@@ -2,7 +2,7 @@
 
 namespace Blazor.Client.Widgets.Text
 {
-    public class TextWidgetMediator : BlazorWidgetMediator<TextComponent>
+    public class TextWidgetMediator : RazorWidgetMediator<TextComponent>
     {
         protected override void InitialRender()
         {

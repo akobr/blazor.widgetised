@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Widgetised.Components
 {
-    public abstract class SystemComponent<TViewModel> : SystemComponent
+    public abstract class CustomComponent<TViewModel> : CustomComponent
         where TViewModel : class
     {
         private INotifyPropertyChanged? registeredModel;
@@ -62,13 +62,13 @@ namespace Blazor.Widgetised.Components
         }
     }
 
-    public abstract class SystemComponent : ComponentBase, IComponentBuildContract, IDisposable
+    public abstract class CustomComponent : ComponentBase, IInteractionPipelineContract, IDisposable
     {
         private readonly InteractionPipe interactionPipe;
 
         protected IInteractionPipe InteractionPipe => interactionPipe;
 
-        public SystemComponent()
+        public CustomComponent()
         {
             interactionPipe = new InteractionPipe();
         }
@@ -84,15 +84,15 @@ namespace Blazor.Widgetised.Components
             // no operation ( template method )
         }
 
-        protected void ChildReferenceCaptured(object component)
+        protected void RegisterChild(object component)
         {
-            if (component is IComponentBuildContract childContract)
+            if (component is IInteractionPipelineContract childContract)
             {
                 childContract.SetParentInteractionPipe(interactionPipe);
             }
         }
 
-        void IComponentBuildContract.SetParentInteractionPipe(IInteractionPipe? parentPipe)
+        void IInteractionPipelineContract.SetParentInteractionPipe(IInteractionPipe? parentPipe)
         {
             interactionPipe.SetParent(parentPipe);
         }

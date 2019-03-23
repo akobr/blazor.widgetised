@@ -4,7 +4,7 @@ using Blazor.Widgetised.Mediators;
 
 namespace Blazor.Client.Widgets.RandomUpdater
 {
-    public class RandomUpdaterWidgetMediator : BlazorWidgetMediator<RandomUpdatorComponent>
+    public class RandomUpdaterWidgetMediator : RazorWidgetMediator<RandomUpdatorComponent>
     {
         private readonly Random randomGenerator = new Random();
 

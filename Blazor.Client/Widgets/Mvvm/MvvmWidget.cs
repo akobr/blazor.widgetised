@@ -4,7 +4,7 @@ using Blazor.Widgetised.Messaging;
 
 namespace Blazor.Client.Widgets.Mvvm
 {
-    public class MvvmWidget : BlazorWidgetMediator<MvvmWidgetLayout>, IInitialisable
+    public class MvvmWidget : RazorWidgetMediator<MvvmWidgetLayout>, IInitialisable
     {
         private ViewModel model = new ViewModel();
 

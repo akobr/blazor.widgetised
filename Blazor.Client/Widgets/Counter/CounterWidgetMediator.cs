@@ -9,7 +9,7 @@ namespace Blazor.Client.Widgets.Counter
 
         public void Initialise()
         {
-            // Set interactions
+            // Register interactions
             InteractionPipe.Register<CounterMessage.Increment>((m) => { State.Count++; RenderCount(); });
             InteractionPipe.Register<CounterMessage.Decrement>((m) => { State.Count--; RenderCount(); });
 

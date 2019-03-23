@@ -6,7 +6,7 @@ using Blazor.Widgetised.Messaging;
 
 namespace Blazor.Client.Widgets.Layout
 {
-    public class ExampleLayoutWidget : BlazorWidgetMediator<ExampleLayout, LayoutState>, IInitialisable
+    public class ExampleLayoutWidget : RazorWidgetMediator<ExampleLayout, LayoutState>, IInitialisable
     {
         private readonly IMessageBus messageBus;
 

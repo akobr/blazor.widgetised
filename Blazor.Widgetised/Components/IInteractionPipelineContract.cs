@@ -2,7 +2,7 @@
 
 namespace Blazor.Widgetised.Components
 {
-    public interface IComponentBuildContract
+    public interface IInteractionPipelineContract
     {
         void SetParentInteractionPipe(IInteractionPipe? parentPipe);
     }

@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Widgetised.Mediators
 {
-    public abstract class BlazorWidgetMediator<TComponent> : WidgetMediator, IWidgetPresenterProvider
+    public abstract class RazorWidgetMediator<TComponent> : WidgetMediator, IWidgetPresenterProvider
         where TComponent : class, IComponent
     {
         private readonly WidgetPresenter<TComponent> autoPresenter;
 
-        protected BlazorWidgetMediator()
+        protected RazorWidgetMediator()
         {
             autoPresenter = new WidgetPresenter<TComponent>();
         }
@@ -30,7 +30,7 @@ namespace Blazor.Widgetised.Mediators
 #pragma warning disable CS8618
     // CS8618: Non-nullable field is uninitialized.
     // Reason: typedState field will be filled in as part of build process in widget factory.
-    public abstract class BlazorWidgetMediator<TComponent, TState> : BlazorWidgetMediator<TComponent>
+    public abstract class RazorWidgetMediator<TComponent, TState> : RazorWidgetMediator<TComponent>
         where TComponent : class, IComponent
     {
         private TState typedState;

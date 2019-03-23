@@ -86,12 +86,10 @@ namespace Blazor.Widgetised.Presenters
 
         private void TryFillContract(TComponent component)
         {
-            if (!(component is IComponentBuildContract contract))
+            if (component is IInteractionPipelineContract contract)
             {
-                return;
+                contract.SetParentInteractionPipe(interactionPipe);
             }
-
-            contract.SetParentInteractionPipe(interactionPipe);
         }
 
         void IWidgetPresenterBuildContract.SetWidgetContainerManagement(IWidgetContainerManagement newContainerManagement)
