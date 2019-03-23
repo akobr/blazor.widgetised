@@ -376,7 +376,8 @@ WidgetDescription description = new WidgetDescription()
   Customisation = customisation
 };
 
-// when the widget's going to be created the original customisation from the variant is merged with the dynamic changes
+// when the widget's going to be created
+// the original customisation from the variant is merged with the dynamic changes
 ```
 
 ## Road map
