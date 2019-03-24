@@ -36,9 +36,9 @@ namespace Blazor.Client.Widgets.Customisable
 
 
             // Partial customisation change can be defined by dynamic type Customisation<TCustomisation>
-            // Dynamic types're required two packages: Microsoft.CSharp and System.Dynamic.Runtime
+            // Dynamic types require two packages: Microsoft.CSharp and System.Dynamic.Runtime
 
-            // dynamic changes = new Customisation<IExampleCustomisation>();
+            // dynamic changes = new DynamicCustomisation<IExampleCustomisation>();
             // changes.Text = "new value";
             // changes.Number = 7;
 

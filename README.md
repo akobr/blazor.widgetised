@@ -327,23 +327,10 @@ A custom component can be used with any view model. For automatic updates an imp
 
 To be able to create more flexible and configurable widgets: A `WidgetVariant` or `WidgetDescription` can contain a custom object which will be used as the static or dynamic configuration for a widget.
 
-The first step is to create strongly typed customisation `IExampleCustomisation`:
+The first step is to create a strongly typed customisation model:
 
 ```csharp
-public interface IExampleCustomisation
-{
-  string Text { get; set; }
-
-  int Number { get; set; }
-
-  bool Flag { get; set; }
-}
-```
-
-Create your own implementation of the customisation contract. Just implement the interface created in the previous step.
-
-```csharp
-public class ExampleCustomisation : IExampleCustomisation
+public class ExampleCustomisation
 {
   public ExampleCustomisation()
   {
@@ -361,10 +348,10 @@ public class ExampleCustomisation : IExampleCustomisation
 }
 ```
 
-The customisation can be overwritten by specifying new instance inside `WidgetDescription`. When you need to change only the specific set of properties a dynamic customisation object `Customisation<TCustomisation>` or `Dictionary<string, object>` should be used.
+The customisation can be overwritten by specifying new instance inside `WidgetDescription`. When you need to change only the specific set of properties a dynamic customisation object `DynamicCustomisation<TCustomisation>` or `Dictionary<string, object>` should be used. A dictionary is a better option if you don't want to use dynamic types.
 
 ```csharp
-dynamic customisation = new Customisation<IExampleCustomisation>();
+dynamic customisation = new DynamicCustomisation<ExampleCustomisation>();
 
 // only the specific subset of properties can be overwritten
 customisation.Number = 42;
@@ -375,9 +362,39 @@ WidgetDescription description = new WidgetDescription()
   VariantName = "MyWidetVariant",
   Customisation = customisation
 };
+```
 
-// when the widget's going to be created
-// the original customisation from the variant is merged with the dynamic changes
+When the widget's going to be created the original customisation from the variant is merged with the dynamic changes.
+
+> Dynamic types require two nuget packages: [Microsoft.CSharp](https://www.nuget.org/packages/Microsoft.CSharp/) and [System.Dynamic.Runtime](https://www.nuget.org/packages/System.Dynamic.Runtime/).
+
+Strongly typed customisation which supports partial updates and merging needs to implement `IProviderOfChangedProperties` interface. For easier implementation is base class `PartialCustomisationBase`.
+
+```csharp
+public class TypedPartialExampleCustomisation : PartialCustomisationBase
+{
+  private string text = string.Empty;
+  private int number;
+  private bool flag;
+
+  public bool Flag
+  {
+    get => flag;
+    set => SetProperty(ref flag, value);
+  }
+
+  public int Number
+  {
+    get => number;
+    set => SetProperty(ref number, value);
+  }
+
+  public string Text
+  {
+    get => text;
+    set => SetProperty(ref text, value);
+  }
+}
 ```
 
 ## Road map
