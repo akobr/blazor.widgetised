@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Blazor.Widgetised.Configuration;
 using Blazor.Widgetised.Logging;
 using Blazor.Widgetised.Mediators;
 using Blazor.Widgetised.Presenters;
@@ -170,12 +171,19 @@ namespace Blazor.Widgetised
 
         private object? GetCustomisation(WidgetDescription description)
         {
-            if (description.Customisation != null)
+            if (description.Variant?.Customisation == null)
             {
                 return description.Customisation;
             }
 
-            return description.Variant?.Customisation;
+            object customisation = description.Variant.Customisation;
+
+            if (Customisation.IsMergable(description.Customisation))
+            {
+                Customisation.Merge(customisation, description.Customisation, customisation.GetType());
+            }
+
+            return customisation;
         }
 
         private object? BuildState(WidgetDescription description)
