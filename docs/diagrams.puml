@@ -1,4 +1,4 @@
-@startuml architecture
+@startuml architecture-overview
 
 interface IMessage {
     Represent a message.
@@ -14,9 +14,40 @@ interface IMessageBus {
     UnregisterAll(object)
 }
 
-interface IInteractionPipe {
-    Send<TMessage>(TMessage)
-    Register<TMessage>(Action<TMessage>)
+class Service #CornflowerBlue {
+    <i>A unit of business logic.</i>
+}
+
+class Widget #CornflowerBlue {
+    <i>An independent and self-containing unit</i>
+    <i>of UI and an orchastrator.</i>
+}
+
+Service <..> IMessageBus
+IMessageBus <..> Widget
+IMessageBus . IMessage
+
+@enduml
+
+@startuml architecture-services
+
+interface IWidgetManagementService #GreenYellow {
+    Build(string) : WidgetInfo
+    Build(WidgetVariant) : WidgetInfo
+    Build(WidgetDescription) : WidgetInfo
+    ..
+    Start(string, string) : WidgetInfo
+    Start(WidgetDescription) : WidgetInfo
+    ..
+    Activate(Guid, string)
+    Deactivate(Guid)
+    Destroy(Guid)
+}
+
+interface IWidgetFactory {
+    Build(string) : WidgetInfo
+    Build(WidgetVariant) : WidgetInfo
+    Register(string, WidgetVariant)
 }
 
 class WidgetVariant<TCustomisation> {
@@ -33,18 +64,14 @@ class WidgetDescription<TCustomisation> {
     Customisation : TCustomisation
 }
 
-interface IWidgetManagementService #GreenYellow {
-    Build(string) : WidgetInfo
-    Build(WidgetVariant) : WidgetInfo
-    Build(WidgetDescription) : WidgetInfo
-    ..
-    Start(string, string) : WidgetInfo
-    Start(WidgetDescription) : WidgetInfo
-    ..
-    Activate(Guid, string)
-    Deactivate(Guid)
-    Destroy(Guid)
-}
+IWidgetFactory <- IWidgetManagementService
+IWidgetManagementService .. WidgetDescription
+IWidgetFactory .. WidgetVariant
+WidgetVariant <- WidgetDescription
+
+@enduml
+
+@startuml architecture-widget
 
 class WidgetMediator #CornflowerBlue {
     #IsActive : bool
@@ -59,14 +86,13 @@ class WidgetMediator #CornflowerBlue {
     #GetPresenter<TPresenter>() : TPresenter
 }
 
-interface IWidgetPresenter {
-    Activate(IPresenterInlineActivationContext)
-    Activate(IPresenterInContainerActivationContext)
-    Deactivate()
+interface IInteractionPipe {
+    Send<TMessage>(TMessage)
+    Register<TMessage>(Action<TMessage>)
 }
 
-interface ITypedWidgetCustomisation #CornflowerBlue {
-    <i>Typed customisation for a widget.</i>
+interface IWidgetCustomisation #CornflowerBlue {
+    <i>A customisation for a widget.</i>
 }
 
 class WidgetState #CornflowerBlue {
@@ -77,47 +103,48 @@ class WidgetLayoutComponent #CornflowerBlue {
     <i>A structure of Razor components.</i>
 }
 
-class Service #CornflowerBlue {
-    <i>A long-running unit of business logic.</i>
-}
 
-Service <..> IMessageBus
-
-IWidgetManagementService .. WidgetDescription
-WidgetDescription .. WidgetVariant
-WidgetVariant .. ITypedWidgetCustomisation
-
-IMessageBus <..> WidgetMediator
-IMessageBus . IMessage
-
-ITypedWidgetCustomisation <- WidgetMediator
+WidgetMediator ---> WidgetLayoutComponent
+IWidgetCustomisation <- WidgetMediator
 WidgetMediator -> WidgetState
-WidgetMediator --> IWidgetPresenter
-IWidgetPresenter -> WidgetLayoutComponent
 WidgetMediator <.. IInteractionPipe
 IInteractionPipe <.. WidgetLayoutComponent
 
 @enduml
 
-@startuml messaging
+@startuml architecture-presenter
+
+interface IWidgetPresenter {
+    Activate(IPresenterInlineActivationContext)
+    Activate(IPresenterInContainerActivationContext)
+    Deactivate()
+}
+
+@enduml
+
+@startuml messaging-interaction
 
 collections components order 1
 participant Mediator order 2
-entity MessageBus order 3
-collections services order 4
 
-== Interactions (platform) ==
 
 [-> components : send interaction
 components -> components : bubling
+components -> components : bubling
 components -> Mediator : receive
 
-== Messages (logic) ==
+@enduml
+
+@startuml messaging-message
+
+participant Mediator order 1
+entity MessageBus order 2
+collections services order 3
 
 Mediator -> MessageBus : send message
 MessageBus -> services : receive
 
-...another time...
+...another time (broadcast)...
 
 services -> MessageBus : send message
 MessageBus -> services : receive

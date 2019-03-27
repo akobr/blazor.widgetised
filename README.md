@@ -136,7 +136,7 @@ public static void RegisterWidgetVariants(this IComponentsApplicationBuilder app
 To place an inline widget inside Razor component can be done by `Widget` element:
 
 ```cshtml
-<Widget VariantName="MyWidgetVariant" /> 
+<Widget VariantName="MyWidgetVariant" />
 ```
 
 If you planning to dynamically instantiate a widget from a code-based component you can render it directly by `RenderTreeBuilder`.
