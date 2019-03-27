@@ -3,8 +3,8 @@
 interface IMessage {
     Represent a message.
     ..
-    <i>Helps to distingush from other</i>
-    <i>types for clean architecture.</i>
+    <i>Helps to distinguish from other</i>
+    <i>types for a clean architecture.</i>
 }
 
 interface IMessageBus {
@@ -14,17 +14,17 @@ interface IMessageBus {
     UnregisterAll(object)
 }
 
-class Service #CornflowerBlue {
+class Service #GreenYellow {
     <i>A unit of business logic.</i>
 }
 
-class Widget #CornflowerBlue {
+class Widget #GreenYellow {
     <i>An independent and self-containing unit</i>
-    <i>of UI and an orchastrator.</i>
+    <i>of UI and an orchestrator.</i>
 }
 
-Service <..> IMessageBus
-IMessageBus <..> Widget
+Service <..> IMessageBus : send and receive
+IMessageBus <..> Widget : send and receive
 IMessageBus . IMessage
 
 @enduml
@@ -73,7 +73,7 @@ WidgetVariant <- WidgetDescription
 
 @startuml architecture-widget
 
-class WidgetMediator #CornflowerBlue {
+class WidgetMediator #GreenYellow {
     #IsActive : bool
     #InteractionPipe : IInteractionPipe
     #Logger : ILogger
@@ -91,24 +91,24 @@ interface IInteractionPipe {
     Register<TMessage>(Action<TMessage>)
 }
 
-interface IWidgetCustomisation #CornflowerBlue {
+interface IWidgetCustomisation #GreenYellow {
     <i>A customisation for a widget.</i>
 }
 
-class WidgetState #CornflowerBlue {
+class WidgetState #GreenYellow {
     <i>A POCO object as a state of a widget.</i>
 }
 
-class WidgetLayoutComponent #CornflowerBlue {
+class RazorComponent #GreenYellow {
     <i>A structure of Razor components.</i>
 }
 
 
-WidgetMediator ---> WidgetLayoutComponent
+WidgetMediator ---> RazorComponent
 IWidgetCustomisation <- WidgetMediator
 WidgetMediator -> WidgetState
-WidgetMediator <.. IInteractionPipe
-IInteractionPipe <.. WidgetLayoutComponent
+WidgetMediator <.. IInteractionPipe : bubble
+IInteractionPipe <.. RazorComponent : bubble
 
 @enduml
 
@@ -188,12 +188,12 @@ class ViewModelRegion {
 
 @startuml component-system
 
-class CustomComponent<TModel> {
+class CustomComponent<TViewModel> {
     <i>Implement connection with</i>
-    <i>interaction pipeline.</i>
+    <i>an interaction pipeline.</i>
     ..
-    -ViewModel : TModel
-    +SetViewModel(TModel)
+    -ViewModel : TViewModel
+    +SetViewModel(TViewModel)
     #RegisterChild(IComponent)
 }
 

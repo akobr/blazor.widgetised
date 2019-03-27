@@ -16,26 +16,44 @@ Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has b
 
 ### Supporting concepts
 
-* **state**: an automatically stored and restored state of a widget, when the same widget is placed to the same position.
-* **variant**: a predefined widget configuration; simplifies a widget creation.
-* **container**: named placeholder in UI where can be placed content, dynamically.
-* **customisation**: allows configuring a currently created widget.
-* **store**: a piece of the application state.
+* **State**: an automatically stored and restored state of a widget, when the same widget is placed to the same position.
+* **Variant**: a predefined widget configuration; simplifies a widget creation.
+* **Container**: named placeholder in UI where can be placed content, dynamically.
+* **Customisation**: allows configuring a currently created widget.
+* **Store**: a piece of the application state.
 
-## Architecture overview
+## Architecture
 
-![architecture overview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture.png)
+The main concept of *Widgetised Blazor* is to build decoupled libraries with widgets and services to meet your business requirements.
 
-## Messaging (loose coupling)
+![architecture and main concept](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture-overview.png)
+
+Base architectural bricks are *services, widgets* and grout is *a message bus* for sending messages between independent units.
+
+To manage widgets by *building*, *activating*, *deactivating* or *destroying* can be done in centralised service, called `IWidgetManagementService`.
+
+![widget management service](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture-services.png)
+
+The system is using default *.net* `IServiceProvider` for resolving types and widgets (IoC container). All widget parts should be registered with `IServiceCollection` or a custom `IWidgetFactory` needs to be used.
+
+![the concept of widgets](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture-widget.png)
+
+Each widget needs to have a mediator and presenter, optionally can have customisation model and persistent state. By default in the world of Razor components is presenter hidden and the mediator can interact directly with the root component. Entire communication from UI to mediator should be done only through interaction pipeline.
+
+![an interface of presenter](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/architecture-presenter.png)
+
+Presenters are here for abstraction in-between *logic* and *platform* layers, which allows switching to different platform any time. To make a transition even easier a custom presenter type shouldn't be referenced in the mediator. The widget can call methods only on the interface of a presenter.
+
+## Messaging
 
 * **platform -> logic**: bubbling of interactions in a component tree which ends in a mediator.
 * **logic <-> logic**: a broadcast messaging bus, between services and mediators.
 
-![messaging](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/messaging.png)
-
 ### Intersections (platform)
 
-The intersections are designed to be used on the platform layer in the hierarchical structure of components, where they can bubble up in the tree and potentially be captured and handled inside the mediator.
+The intersections are designed to be used on the platform layer in the hierarchical structure of components, where they can *bubble up* in the tree and potentially be captured and handled inside the mediator.
+
+![interactions](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/messaging-interaction.png)
 
 An iteraction is sent and received by `IInteractionPipe` which should be structured into a chain of pipes (a pipeline). Any component with `IInteractionPipelineContract` interface will be automatically connected to the chain when is used as a main component in a presenter. The base class `CustomComponent` contains a helper method `RegisterChild(IComponent)` to connect a child component to the pipeline.
 
@@ -83,6 +101,8 @@ To report an interaction the same interface `IInteractionPipe` is needed.
 ### Messages (logic)
 
 On the logic layer between services and widgets can be used message bus which is designed to send broadcast messages and keep subsystem modules/widgets totally decouple to each other.
+
+![message bus](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/diagrams/messaging-message.png)
 
 Register a handler or sent a message is possible by `IMessageBus` interface. Registration can be done by `Register` method and specifying a handler method in shape `void Handler(IMessage)`.
 
@@ -397,6 +417,24 @@ public class TypedPartialExampleCustomisation : PartialCustomisationBase
 }
 ```
 
+## Example of a full composition root
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddSingleton<IWritable, WritableConsole>();
+  services.AddSingleton<ILogger, TextLogger>();
+  services.AddSingleton<IMessageBus, MessageBus>();
+  services.AddSingleton<IWidgetContainerManagement, WidgetContainerManagement>();
+  services.AddSingleton<IWidgetStore, WidgetStore>();
+  services.AddSingleton<IWidgetStateStore, WidgetStateStore>();
+  services.AddSingleton<IWidgetFactory, WidgetFactory>();
+  services.AddSingleton<IWidgetManagementService, WidgetManagementService>();
+
+  services.RegisterWidgets();
+}
+```
+
 ## Road map
 
 ### Phase 1
@@ -407,7 +445,7 @@ public class TypedPartialExampleCustomisation : PartialCustomisationBase
 - [X] Write decent documentation
 - [X] Create architecture overview diagram
 - [ ] Unit tests
-- [ ] Release alfa version
+- [X] Release alfa version
 
 ### Phase 2
 
