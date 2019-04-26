@@ -1,25 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-    <NullableContextOptions>enable</NullableContextOptions>
-    <IsPackable>true</IsPackable>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <NeutralLanguage>en-GB</NeutralLanguage>
-    <Description>Library with the support of widgets for a Blazor application. The main goal is to help with loose coupling inside a system.</Description>
-    <Version>0.6.0-alpha</Version>
-    <Authors>Ales Kobr</Authors>
-    <PackageTags>blazor widget widgetized mvvm</PackageTags>
-    <PackageProjectUrl>https://github.com/akobr/blazor.widgetised</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/akobr/blazor.widgetised</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <LangVersion>8.0</LangVersion>
+        <NullableContextOptions>enable</NullableContextOptions>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="3.0.0-preview3-19153-02" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Build" Version="3.0.0-preview3-19153-02" PrivateAssets="all" />
-  </ItemGroup>
+        <RazorLangVersion>3.0</RazorLangVersion>
+        <BlazorLinkOnBuild>true</BlazorLinkOnBuild>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+
+        <IsPackable>true</IsPackable>
+        <IncludeContentInPack>false</IncludeContentInPack>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <NeutralLanguage>en-GB</NeutralLanguage>
+        <Description>Library with the support of widgets for a Blazor application. The main goal is to help with loose coupling inside a system.</Description>
+        <Version>0.6.0-alpha</Version>
+        <Authors>Ales Kobr</Authors>
+        <PackageTags>blazor widget widgetized mvvm</PackageTags>
+        <PackageProjectUrl>https://github.com/akobr/blazor.widgetised</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/akobr/blazor.widgetised</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview4-19216-03" />
+        <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+    </ItemGroup>
 
 </Project>

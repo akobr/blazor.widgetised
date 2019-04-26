@@ -1,4 +1,4 @@
-﻿using Blazor.Widgetised;
+using Blazor.Widgetised;
 using Blazor.Widgetised.Mediators;
 using Blazor.Widgetised.Messaging;
 
