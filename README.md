@@ -4,7 +4,7 @@ Library with the support of **widgets** for a Blazor application.
 The main goal is to help with loose coupling inside a system.
 Initial idea cames from [PureMVC](http://puremvc.org/) architecture, which has been simplified and evolved a little bit.
 
-> Preview alpha release is coming soon. Currently on **Blazor 0.9.0** *preview3-19154-02*. [Visual Studio 2019](https://visualstudio.microsoft.com/vs/preview/) *(Preview 4 or later)* with the ASP.NET and web development workload selected is needed same like [.NET Core 3.0 Preview 3 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) (3.0.100-preview3-010431).
+> Preview alpha release is coming soon. Currently on **Blazor 3.0.0** *preview4-19216-03*. [Visual Studio 2019](https://visualstudio.microsoft.com/vs/preview/) *(Preview 4 or later)* with the ASP.NET and web development workload selected is needed same like [.NET Core 3.0 Preview 4 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) (3.0.100-preview4-011223).
 
 ![Library preview](https://raw.githubusercontent.com/akobr/blazor.widgetised/master/docs/preview.gif)
 
